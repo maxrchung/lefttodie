@@ -28,7 +28,7 @@ class SpriteSheets():
 
 #animate sprites
 class Animate():
-    def __init__(self, image, frames, columns, timer):
+    def __init__(self, image, frames, columns, timer, imagew, imageh):
         try:
             self.image = image
             self.frame = -1
@@ -36,6 +36,8 @@ class Animate():
             self.frames = frames
             self.columns = columns
             self.clock = pygame.time.Clock()
+            self.imagew = imagew
+            self.imageh = imageh
             
         except pygame.error:
             print ('Unable to load images')
@@ -46,31 +48,41 @@ class Animate():
             if self.frame > self.frames - 1:
                 self.frame = 0
 
-    def draw(self):
-        window.blit(self.image, (0, 0), ((self.frame % self.columns) * w, 0, w, h))
-        pygame.display.update()
+    def draw(self, x, y):
+        window.blit(self.image, (x, y), ((self.frame % self.columns) * self.imagew, 0, self.imagew, self.imageh))
         self.clock.tick(self.timer)
-
-player = Animate(a["playerIdleNormal.png"], 2, 2, 5)
-
-w = 32
-h = 32
-window = pygame.display.set_mode((w, h))
-
 
 SpriteSheet = SpriteSheets("Art")
 AllSprites = SpriteSheet.loadAll()
 
-window.fill((255, 255, 255))
+player = Animate(AllSprites["playerMoveNormal.png"], 2, 2, 10, 32, 32)
+playerI = Animate(AllSprites["playerMoveInverse.png"], 2, 2, 10, 32, 32)
+
+w = 1280
+h = 720
+window = pygame.display.set_mode((w, h))
 
 
 
+
+x = 0
+y = 0
+
+w = 1280
+z = 720
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit();
             sys.exit();
                             
-    
+    window.fill((255, 255, 255))
     player.Aupdate()
-    player.draw()
+    player.draw(x,y)
+    playerI.Aupdate()
+    playerI.draw(w, z)
+    pygame.display.update()
+    x+= 3
+    y+= 3
+    w-= 3
+    z-= 3
