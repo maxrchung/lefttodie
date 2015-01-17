@@ -1,0 +1,30 @@
+import sys, pygame
+
+pygame.init()
+
+imageName = 'brownman.png'
+imageWidth = 371;
+imageHeight = 314;
+totalFrames = 8;
+columns = 4;
+
+window = pygame.display.set_mode((imageWidth, imageHeight))
+image = pygame.image.load(imageName)
+frame = -1
+row = 0
+clock = pygame.time.Clock()
+
+while True:
+    pygame.event.get()
+
+    window.fill((255, 255, 255))
+    frame += 1;
+    if frame == columns:
+        row += 1
+    elif frame > totalFrames - 1:
+        frame = 0
+        row = 0
+
+    window.blit(image, (0, 0), ((frame%4)*imageWidth, row*imageHeight, imageWidth, imageHeight))
+    pygame.display.update()
+    clock.tick(15)
