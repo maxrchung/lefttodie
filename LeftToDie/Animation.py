@@ -29,8 +29,16 @@ class SpriteSheets():
 #animate sprites
 class Animate():
     def __init__(self, image, frames, columns, timer, imagew, imageh):
+
+        #image = Spritesheet you wantto use from "AllSprites" dictionary. ex: AllSprites['playerIdleNormal.png]
+        #frames = how many frames are in the sprite sheet. i put 2 for the regular walk, idle, etc
+        #columns = how many sequences are in the actual sprite sheet. the playeridle and walk both have 2 different sprites on one row in their png file
+        #timer = integer used to control how fast it loops through the animation
+        #imagew = image width, the sprites for now are all 32 width
+        #imageh = image height, the sprites for now are all 32 height
+        
         try:
-            self.image = image
+            self.image = image 
             self.frame = -1
             self.timer = timer
             self.frames = frames
@@ -49,12 +57,13 @@ class Animate():
                 self.frame = 0
 
     def draw(self, x, y):
+        #x, y are where on the screen you want the sprite to draw
         window.blit(self.image, (x, y), ((self.frame % self.columns) * self.imagew, 0, self.imagew, self.imageh))
         self.clock.tick(self.timer)
 
 SpriteSheet = SpriteSheets("Art")
 AllSprites = SpriteSheet.loadAll()
-
+'''
 player = Animate(AllSprites["playerMoveNormal.png"], 2, 2, 10, 32, 32)
 playerI = Animate(AllSprites["playerMoveInverse.png"], 2, 2, 10, 32, 32)
 
@@ -86,3 +95,4 @@ while True:
     y+= 3
     w-= 3
     z-= 3
+'''
