@@ -1,5 +1,5 @@
 import pygame
-import Animation
+from Animation import Animate, AllSprites
 import Tiles
 class BlockTile:
     def __init__(self, x, y, screen, is_inverted, is_spawn): #x and y in grid both start at zero
@@ -19,7 +19,7 @@ class BlockTile:
             self.image = AllSprites["tileBlockNormal.png"]
 
     def draw(self):
-         self.screen.blit(self.image,(x*32,y*32))
+        self.screen.blit(self.image,(self.x,self.y))
 
 class SpikeTile:
     def __init__(self, x, y, screen, is_inverted):
@@ -35,7 +35,7 @@ class SpikeTile:
             self.image = AllSprites["tileSpikeNormal.png"]
 
     def draw(self):
-         self.screen.blit(self.image,(x*32,y*32))
+         self.screen.blit(self.image,(self.x*32,self.y*32))
 
 
 class EndTile:
@@ -51,7 +51,7 @@ class EndTile:
         else:
             self.image = AllSprites["tileEndNormal.png"]
     def draw(self):
-         self.screen.blit(self.image,(x*32,y*32))
+         self.screen.blit(self.image,(self.x*32,self.y*32))
 
 class EmptyTile:
     def __init__(self,x,y):
@@ -60,17 +60,21 @@ class EmptyTile:
         self.name = "empty"
 
 
+    def draw(self):
+        pass
+
 class TilesArray:
     def __init__(self, screen, mapfile):
         self.screen = screen
         self.mapfile = open(mapfile, 'r')
+        print(self.mapfile)
         self.tiles = []
         self.inverted_tiles = []
 
     def make_tiles(self):
         x = 0
         y = 0
-        for row in self.mapfile:
+        for row in self.mapfile.readlines():
             for char in row:
                 if char == "B":
                     self.tiles.append(BlockTile(x, y, self.screen, False, False)) #normal block tile
