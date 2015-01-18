@@ -11,6 +11,8 @@ class soundmanager():
         self.jumpSound.set_volume(0.5)
         self.deathSound = pygame.mixer.Sound("Sounds/death.wav")
         self.deathSound.set_volume(0.5)
+        self.victorySound = pygame.mixer.Sound("Sounds/victory.wav")
+        self.victorySound.set_volume(0.5)
         self.levelDieSound = pygame.mixer.Sound("Sounds/levelDie.wav")
         self.levelDieSound.set_volume(0.5)
         self.levelUpSound = pygame.mixer.Sound("Sounds/levelUp.wav")
@@ -23,6 +25,8 @@ class soundmanager():
             self.jumpSound.play()
         elif soundname == "death":
             self.deathSound.play()
+        elif soundname == "victory":
+            self.victorySound.play()
         elif soundname == "levelDie":
             self.levelDieSound.play()
         elif soundname == "levelUp":

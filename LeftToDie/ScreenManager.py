@@ -80,8 +80,7 @@ class Screen:
 
         elif self.state == "GAMESCREEN":
             if self.left:
-                
-                self.screenShaker.shake(2, 9999)
+                self.screenShaker.shake(1, 9999)
 
                 if self.leftPressed:
                     self.sound.playsound("inverse")
@@ -154,7 +153,13 @@ class Screen:
             self.mainplayer.Aupdate()
             self.clouds.cloudupdate()
             self.backobjects.backupdate(self.left)
-                    
+
+        elif self.state == "VICTORYLEAP":
+            pass
+
+        elif self.state == "DEATHDROP":
+            pass
+
         elif self.state == "ENDSCREEN":
             pass
 
@@ -169,10 +174,12 @@ class Screen:
             if playerRect.colliderect(tile.boundingRect):
                 if tile.name == "Spike":
                     # DEATH DROP STATE EXECUTE
-                    pass
+                    self.sound.playsound("death")
+                    self.sound.playsound("levelDie")
                 elif tile.name == "End":
                     # VICTORY LEAP STATE EXECUTE
-                    pass
+                    self.sound.playsound("victory")
+                    self.sound.playsound("levelUp")
                 elif tile.name == "Block":
                     # Reposition the player
                     # Finds center points of the boundingRects
@@ -264,6 +271,12 @@ class Screen:
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
         
             self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
+
+        elif self.state == "VICTORYLEAP":
+            pass
+
+        elif self.state == "DEATHDROP":
+            pass
 
         elif self.state == "ENDSCREEN":
             pass
