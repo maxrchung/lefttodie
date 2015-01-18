@@ -62,6 +62,7 @@ class Animate():
 
 SpriteSheet = SpriteSheets("Art")
 AllSprites = SpriteSheet.loadAll()
+print("SPRITES LOADED")
 
 ##player = Animate(AllSprites["playerMoveNormal.png"], 2, 2, 10, 32, 32)
 ##playerI = Animate(AllSprites["playerMoveInverse.png"], 2, 2, 10, 32, 32)
