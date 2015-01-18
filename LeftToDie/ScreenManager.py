@@ -5,9 +5,6 @@ import sys
 from soundmanager import soundmanager
 
 class Screen:
-
-    velocity = [.03, 0]
-
     def __init__(self):
         self.go = True
         self.state = "LIFESCREEN"
@@ -19,6 +16,8 @@ class Screen:
         pygame.font.init()
         self.fontpath = pygame.font.match_font('lucidasans')
         self.font = pygame.font.Font(self.fontpath, 28)
+        self.velocity = [.03, 0]
+        self.playerpos = [100, 600]
 
         self.clouds = Clouds()
         self.cloudlist = self.clouds.clouds
@@ -26,8 +25,8 @@ class Screen:
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
         
         self.backobjects = BackObjects()
-        self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 5, 32, 32)
-
+        self.startplayer= Animate(AllSprites['move1.png'], 16, 16, 64, 32, 32)
+        self.mainplayer= Animate(AllSprites['move1.png'], 16, 16, 64, 32, 32)
 
         self.current_level = 1
         self.lives = 3
@@ -43,8 +42,33 @@ class Screen:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     self.left = True
+                    
                 elif event.key == pygame.K_RIGHT:
                     self.left = False
+
+        keys = pygame.key.get_pressed()
+        print(keys)
+
+        if self.velocity[0] > .06:
+            self.velocity[0] -= .01
+
+        if keys[pygame.K_RIGHT]:
+            self.playerpos[0] += self.playerpos[0] * self.velocity[0]
+            self.velocity[0] += .01
+            
+        elif keys[pygame.K_LEFT]:
+            self.playerpos[0] += self.playerpos[0] * -self.velocity[0]
+            self.velocity[0] += .01
+        else:
+            self.velocity[0] = .03
+
+        if self.playerpos[1] < 600:
+            self.playerpos[1] += 50
+            
+        elif keys[pygame.K_UP]:
+            self.playerpos[1] -= 100
+            self.sound.playsound("jump")
+            
         if self.state == "LIFESCREEN":
             self.startplayer.Aupdate()
             self.l_screen_time += self.l_screen_clock.tick()
@@ -53,6 +77,7 @@ class Screen:
                 self.l_screen_time = 0
 
         elif self.state == "GAMESCREEN":
+            self.mainplayer.Aupdate()
             self.clouds.cloudupdate()
             self.backobjects.backupdate(self.left)
                     
@@ -60,31 +85,6 @@ class Screen:
             pass
 
     def draw(self):
-
-        keys = pygame.key.get_pressed()
-
-        if self.velocity[0] > .06:
-            self.velocity[0] -= .01
-
-        if keys[pygame.K_RIGHT]:
-            self.startplayer.pos[0] += self.startplayer.pos[0] * self.velocity[0]
-            self.velocity[0] += .01
-        elif keys[pygame.K_LEFT]:
-            self.startplayer.pos[0] += self.startplayer.pos[0] * -self.velocity[0]
-            self.velocity[0] += .01
-        else:
-            self.velocity[0] = .03
-
-        if self.startplayer.pos[1] < 600:
-            self.startplayer.pos[1] += 50
-        elif keys[pygame.K_UP]:
-            self.startplayer.pos[1] -= 100
-            self.sound.playsound("jump")
-
-
-
-
-
         if self.state == "LIFESCREEN":
             background_colour = (0, 0, 0)
             self.screen.fill(background_colour)
@@ -145,13 +145,11 @@ class Screen:
 
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
+        
+            self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
 
         elif self.state == "ENDSCREEN":
-            pass            
-
-        self.startplayer.Aupdate()
-        self.startplayer.draw(self.screen, self.startplayer.pos[0], self.startplayer.pos[1])
-
+            pass
         
         pygame.display.update()
 

@@ -28,7 +28,7 @@ class SpriteSheets():
 #animate sprites
 class Animate():
 
-    pos = [100, 600]
+    #pos = [100, 600]
 
     def __init__(self, image, frames, columns, timer, imagew, imageh):
 
@@ -56,12 +56,12 @@ class Animate():
     def Aupdate(self):
             self.frame += 1
             if self.frame > self.frames - 1:
-                self.frame = 0
+                self.frame = -1
 
     def draw(self, win,  x, y):
         #x, y are where on the screen you want the sprite to draw
         win.blit(self.image, (x, y), ((self.frame % self.columns) * self.imagew, 0, self.imagew, self.imageh))
-        self.clock.tick(self.timer)
+        self.clock.tick_busy_loop(self.timer)
 
 SpriteSheet = SpriteSheets("Art")
 AllSprites = SpriteSheet.loadAll()
