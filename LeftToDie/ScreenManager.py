@@ -19,3 +19,4 @@ class Screen:
 
     def draw(self):
         animator.draw(screen, 100, 100)
+        pygame.display.update()
