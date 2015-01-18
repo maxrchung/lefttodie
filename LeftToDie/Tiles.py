@@ -2,17 +2,13 @@ import pygame
 from Animation import Animate, AllSprites
 import Tiles
 class BlockTile:
-    def __init__(self, x, y, screen, is_inverted, is_spawn): #x and y in grid both start at zero
+    def __init__(self, x, y, screen, is_inverted): #x and y in grid both start at zero
         self.x = x
         self.y = y
         self.rectangle = pygame.Rect(x,y,32,32)
         self.screen = screen
+        self.name = "block"
         self.is_inverted = is_inverted
-        self.is_spawn = is_spawn
-        if (self.is_spawn):
-            self.name = "spawn"
-        else:
-            self.name = "block"
         if self.is_inverted:
             self.image = AllSprites["tileBlockInverted.png"]
         else:
@@ -66,9 +62,9 @@ class TilesArray:
     def __init__(self, screen, mapfile):
         self.screen = screen
         self.mapfile = open(mapfile, 'r')
-        print(self.mapfile)
         self.tiles = []
         self.inverted_tiles = []
+        self.startpos = [0,0]
 
     def make_tiles(self):
         x = 0
@@ -77,9 +73,9 @@ class TilesArray:
         for row in lines:
             for char in row:
                 if char == "B":
-                    self.tiles.append(BlockTile(x, y, self.screen, False, False)) #normal block tile
+                    self.tiles.append(BlockTile(x, y, self.screen, False)) #normal block tile
                 elif char == "I":
-                    self.tiles.append(BlockTile(x, y, self.screen, False, True)) #spawn tile
+                    self.startpos = [x*32, y*32]
                 elif char == "S":
                     self.tiles.append(SpikeTile(x, y, self.screen, False)) #Spike tile
                 elif char == "X":
@@ -96,11 +92,9 @@ class TilesArray:
         for row in self.mapfile:
             for char in row:
                 if char == "B":
-                    self.inverted_tiles.append(BlockTile(x, y, self.screen, True, False)) #normal block tile
-                elif char == "I":
-                    self.inverted_tiles.append(BlockTile(x, y, self.screen, True, True)) #spawn tile
+                    self.inverted_tiles.append(SpikeTile(x, y, self.screen, True)) #normal block tile
                 elif char == "S":
-                    self.inverted_tiles.append(SpikeTile(x, y, self.screen, True)) #Spike tile
+                    self.inverted_tiles.append(BlockTile(x, y, self.screen, True)) #Spike tile
                 elif char == "X":
                     self.inverted_tiles.append(EmptyTile(x, y)) #empty tile
                 elif char == "V":
