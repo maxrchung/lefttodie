@@ -61,7 +61,7 @@ class EmptyTile:
 class TilesArray:
     def __init__(self, screen, mapfile):
         self.screen = screen
-        self.mapfile = open(mapfile, 'r')
+        self.mapfile = mapfile
         self.tiles = []
         self.inverted_tiles = []
         self.startpos = [0,0]
@@ -69,7 +69,9 @@ class TilesArray:
     def make_tiles(self):
         x = 0
         y = 0
-        lines = self.mapfile.readlines()
+        
+        read = open(self.mapfile, 'r')
+        lines = read.readlines()
         for row in lines:
             for char in row:
                 if char == "B":
@@ -89,12 +91,15 @@ class TilesArray:
     def make_inverse(self):
         x = 0
         y = 0
-        for row in self.mapfile:
+
+        read = open(self.mapfile, 'r')
+        lines = read.readlines()
+        for row in lines:
             for char in row:
                 if char == "B":
-                    self.inverted_tiles.append(SpikeTile(x, y, self.screen, True)) #normal block tile
+                    self.inverted_tiles.append(SpikeTile(x, y, self.screen, False)) #normal block tile
                 elif char == "S":
-                    self.inverted_tiles.append(BlockTile(x, y, self.screen, True)) #Spike tile
+                    self.inverted_tiles.append(BlockTile(x, y, self.screen, False)) #Spike tile
                 elif char == "X":
                     self.inverted_tiles.append(EmptyTile(x, y)) #empty tile
                 elif char == "V":
