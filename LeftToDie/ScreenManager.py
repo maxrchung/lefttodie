@@ -4,23 +4,27 @@ import random
 
 class Screen:
     def __init__(self):
-        self.state = "GAMESCREEN"
+        self.state = "LIFESCREEN"
         self.left = False
         self.screenw = 1024
         self.screenh = 768
-        self.screen = pygame.display.set_mode((self.screenw, self.screenh))      
+        self.screen = pygame.display.set_mode((self.screenw, self.screenh))    
         self.clouds = Clouds()
         self.cloudlist = self.clouds.clouds
         self.cloudsnormal = sorted(self.clouds.cloudimages)
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
-                                              
-        #pygame.display.set_caption('Left To Die')
-        #animator = Animate(Animation.AllSprites['playerIdleNormal.png'], 2, 2, 5, 32, 32)
+        self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 5, 32, 32)
+        self.current_level = 1
+        self.lives = 3
+        self.l_screen_clock = pygame.time.Clock()
+        self.l_screen_time = 0
 
+
+                                              
     def update(self):
 
         if self.state == "LIFESCREEN":
-            pass
+            self.startplayer.Aupdate()
         elif self.state == "GAMESCREEN":
             self.clouds.cloudupdate()
             
@@ -31,8 +35,18 @@ class Screen:
 
     def draw(self):
         if self.state == "LIFESCREEN":
-            background_colour = (255, 255, 255)
+            background_colour = (0, 0, 0)
             self.screen.fill(background_colour)
+            self.startplayer.draw(self.screen, 460, 352)
+            pygame.font.init()
+            fontpath = pygame.font.match_font('lucidasans')
+            font = pygame.font.Font(fontpath, 28)
+            text = font.render("x " + str(self.lives), True, pygame.Color(255,255,255))
+            self.screen.blit(text, (492, 347))
+            self.l_screen_time += self.l_screen_clock.tick()
+            if self.l_screen_time >= 3000:
+                self.state = "GAMESCREEN"
+                self.l_screen_time = 0
                                               
         elif self.state == "GAMESCREEN":
             if self.left:
@@ -55,8 +69,8 @@ class Screen:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit();
-                    sys.exit();
+                    pygame.quit()
+                    sys.exit()
 
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
@@ -87,11 +101,13 @@ class Clouds:
                     self.cloudsinverted.append(sprite)
 
         for i in range(0, self.cloudnum):
-            self.clouds.append([random.randrange(100, 900),random.randrange(117, 500), random.randint(1,3), self.cloudimages[random.randint(0,len(self.cloudimages) - 1)]])
+            self.clouds.append([random.randrange(100, 900),random.randrange(117, 500), random.randint(1,2), self.cloudimages[random.randint(0,len(self.cloudimages) - 1)]])
 
     def cloudupdate(self):
         for i in range(len(self.clouds)):
             self.clouds[i][0] -= self.clouds[i][2]
             if self.clouds[i][0] + 100 < 0:
                 self.clouds[i][0] = 1020
+                self.clouds[i][1] = random.randrange(117, 500)
+                self.clouds[i][3] = self.cloudimages[random.randint(0, len(self.cloudimages) - 1)]
 
