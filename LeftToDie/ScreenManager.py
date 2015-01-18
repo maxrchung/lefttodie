@@ -140,8 +140,7 @@ class Screen:
                 self.jumped = False
                 self.playerpos[1] = 600
 
-            print(self.playerpos)
-            print()
+            # checkCollision(self.playerpos, tiles)
 
             self.mainplayer.Aupdate()
             self.clouds.cloudupdate()
@@ -149,6 +148,51 @@ class Screen:
                     
         elif self.state == "ENDSCREEN":
             pass
+
+    def checkCollision(playerpos, tiles):
+        # Make our playerRect based on the given position
+        playerRect = pygame.Rect(playerpos[0] + 8, playerpos[1] + 8, 16, 24)
+        for tile in tiles:
+            # Don't care if it's empty
+            if tile.name = "Empty":
+                continue
+                
+            if playerRect.colliderect(tile.boundingRect):
+                if tile.name = "Spike":
+                    # DEATH DROP STATE EXECUTE
+                    pass
+                elif tile.name = "End":
+                    # VICTORY LEAP STATE EXECUTE
+                    pass
+                elif tile.name = "Block":
+                    # Reposition the player
+                    # Finds center points of the boundingRects
+                    playerPos = playerRect.center
+                    tilePos = playerRect.center
+
+                    # Finds diff vector between player and tile
+                    diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])
+                
+                    # If x is larger than the y, then we know that it is a horizontal collision
+                    if abs(diff[0]) > abs(diff[1]):
+                        # If x is positive, then we reset player on the right of the tile
+                        if  diff[0] > 0:
+                            playerRect.left = tile.boundingRect.right
+                        # Else if negative, we set the player left of the tile
+                        else:
+                            playerRect.right = tile.boundingRect.left
+
+                    # If y is larger than x, then there is a vertical collision
+                    else:
+                        # If y is negative, then reset player on the top of the tile
+                        # Note that this is opposite of x calclations because we have to keep
+                        # in mind that y is reversed according to top left coordinates
+                        if diff[1] < 0:
+                            playerRect.bottom = tile.boundingRect.top
+                        else:
+                            playerRect.top = tile.boundingRect.bottom
+                    return
+
 
     def draw(self):
         if self.state == "LIFESCREEN":
