@@ -1,18 +1,21 @@
 import pygame
+from Animation import Animate
+import Animation
+
+screen = pygame.display.set_mode((1024, 768))
+background_colour = (255, 255, 255)
+screen.fill(background_colour)
+pygame.display.set_caption('Left To Die')
+animator = Animate(Animation.AllSprites['playerIdleNormal.png'], 2, 2, 5, 32, 32)
 
 
 class Screen:
 
-    pygame.init()
-    screen = pygame.display
-    background_colour = (255, 255, 255)
-
     def __init__(self):
-        self.screen = pygame.display.set_mode((1024, 768))
-        pygame.display.set_caption('Left To Die')
+        pass
 
     def update(self):
         self.draw()
 
     def draw(self):
-        print("Hello")
+        animator.draw(screen, 100, 100)
