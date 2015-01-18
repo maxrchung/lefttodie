@@ -66,7 +66,6 @@ class TilesArray:
     def __init__(self, screen, mapfile):
         self.screen = screen
         self.mapfile = open(mapfile, 'r')
-        print(self.mapfile)
         self.tiles = []
         self.inverted_tiles = []
 

@@ -146,10 +146,10 @@ class Screen:
             # Gravity application
             self.velocity[1] += 2.5
 
-            if self.playerpos[0] < 0:
-                self.playerpos[0] = 0
-            elif self.playerpos[0] > 1024:
-                self.playerpos[0] = 1024
+            if self.playerpos[0]+8 < 0:
+                self.playerpos[0] = -8
+            elif self.playerpos[0] + 24 > 1024:
+                self.playerpos[0] = 1024 - 24
 
             if self.playerpos[1] > 600:
                 self.jumped = False
