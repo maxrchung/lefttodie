@@ -4,7 +4,6 @@ import ScreenManager
 class GameManager:
 
     go = False
-    state = ""
     screen = Screen()
 
     def __init__(self, state):
@@ -13,20 +12,21 @@ class GameManager:
 
     def run(self):
         self.update()
-        self.draw()
+##        self.draw()
 
     def update(self):
+        self.screen.update()
         self.screen.draw()
 
-    def draw(self):
-        if self.state == "STARTSCREEN":
-            print("I like pie")
-        elif self.state == "LIFESCREEN":
-            print("I Do not")
-        elif self.state == "GAMESCREEN":
-            print("Well you suck")
-        elif self.state == "ENDSCREEN":
-            print("At least I'm not Dead")
+##    def draw(self):
+##        if self.state == "STARTSCREEN":
+##            print("I like pie")
+##        elif self.state == "LIFESCREEN":
+##            print("I Do not")
+##        elif self.state == "GAMESCREEN":
+##            print("Well you suck")
+##        elif self.state == "ENDSCREEN":
+##            print("At least I'm not Dead")
 
     def endGame(self):
         self.go = False
