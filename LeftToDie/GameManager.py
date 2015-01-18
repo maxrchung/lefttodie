@@ -15,6 +15,7 @@ class GameManager:
         self.update()
 
     def update(self):
+        self.screen.update()
         self.screen.draw()
 
 ##    def draw(self):
