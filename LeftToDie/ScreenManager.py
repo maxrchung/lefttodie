@@ -22,7 +22,7 @@ class Screen:
 
         pygame.display.set_caption("Left to Die")
         pygame.font.init()
-        self.fontpath = pygame.font.match_font('lucidasans')
+        self.fontpath = pygame.font.match_font('comicsansms')
         self.font = pygame.font.Font(self.fontpath, 28)
         self.velocity = [.03, 0]
         self.playerpos = [64, 600]
@@ -45,6 +45,7 @@ class Screen:
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
         self.TALevel1.make_inverse()
+        self.TALevel1.mapfile.close()
         self.tiles = [self.TALevel1.tiles]
         self.tilesInverse = [self.TALevel1.inverted_tiles]
         self.currentLevel = 0
