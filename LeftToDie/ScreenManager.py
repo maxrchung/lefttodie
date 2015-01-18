@@ -4,6 +4,7 @@ import random
 import sys
 from soundmanager import soundmanager
 import math
+from ScreenShaker import *
 
 class Screen:
     def __init__(self):
@@ -14,7 +15,10 @@ class Screen:
         self.screenw = 1024
         self.screenh = 768
         self.sound = soundmanager()
-        self.screen = pygame.display.set_mode((self.screenw, self.screenh))
+        self.shakeScreen = pygame.display.set_mode((self.screenw, self.screenh))
+        self.screen = self.shakeScreen.copy()
+        self.screenShaker = ScreenShaker()
+
         pygame.display.set_caption("Left to Die")
         pygame.font.init()
         self.fontpath = pygame.font.match_font('lucidasans')
@@ -76,6 +80,9 @@ class Screen:
 
         elif self.state == "GAMESCREEN":
             if self.left:
+                
+                self.screenShaker.shake(2, 9999)
+
                 if self.leftPressed:
                     self.sound.playsound("inverse")
                 if self.jumped:
@@ -89,6 +96,8 @@ class Screen:
                         self.mainplayer = Animate(AllSprites['playerIdleInverse.png'], 2, 2, 500, 32, 32)
 
             else:
+                self.screenShaker.stop()
+
                 if self.rightPressed:
                     self.sound.playsound("syobon")
                 if self.jumped:
@@ -259,6 +268,8 @@ class Screen:
         elif self.state == "ENDSCREEN":
             pass
         
+        self.screenShaker.update()
+        self.shakeScreen.blit(self.screen, self.screenShaker.getValue())
         pygame.display.update()
 
 class BackObjects:
