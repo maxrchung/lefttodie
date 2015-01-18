@@ -19,15 +19,14 @@ class Screen:
         self.cloudlist = self.clouds.clouds
         self.cloudsnormal = sorted(self.clouds.cloudimages)
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
-
+        
+        self.backobjects = BackObjects()
         self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 5, 32, 32)
 
         self.current_level = 1
         self.lives = 3
         self.l_screen_clock = pygame.time.Clock()
         self.l_screen_time = 0
-        self.fhill = AllSprites["groundFrontNormal.png"]
-        self.bhill = AllSprites["groundBackNormal.png"]
 
     def update(self):
         for event in pygame.event.get():
@@ -49,7 +48,8 @@ class Screen:
 
         elif self.state == "GAMESCREEN":
             self.clouds.cloudupdate()
-            
+            self.backobjects.backupdate(self.left)
+                    
         elif self.state == "ENDSCREEN":
             pass
 
@@ -68,10 +68,16 @@ class Screen:
                 for i in range(0, len(self.cloudlist)):
                     if "Inverse" not in self.cloudlist[i][3]:
                         self.cloudlist[i][3] = self.cloudsinverted[int(self.cloudlist[i][3][5]) - 1]
-                self.fhill = AllSprites["groundBackInverse.png"]
-                self.bhill = AllSprites["groundFrontInverse.png"]
-                
-                                 
+                self.bhill = AllSprites["groundBackInverse.png"]
+                self.fhill = AllSprites["groundFrontInverse.png"]
+                self.fsky = AllSprites["skyFrontInverse.png"]
+                self.bsky = AllSprites["skyBackInverse.png"]
+
+                self.bhill2 = AllSprites["groundBackInverse.png"]
+                self.fhill2 = AllSprites["groundFrontInverse.png"]
+                self.fsky2 = AllSprites["skyFrontInverse.png"]
+                self.bsky2 = AllSprites["skyBackInverse.png"]
+
             else:
                 self.sun = AllSprites["sunNormal.png"]
                 self.background = AllSprites["backgroundNormal.png"]
@@ -79,17 +85,30 @@ class Screen:
                     if "Normal" not in self.cloudlist[i][3]:
                         self.cloudlist[i][3] = self.cloudsnormal[int(self.cloudlist[i][3][5]) - 1]
 
-                self.fhill = AllSprites["groundBackNormal.png"]
-                self.bhill = AllSprites["groundFrontNormal.png"]
+                self.bhill = AllSprites["groundBackNormal.png"]
+                self.fhill = AllSprites["groundFrontNormal.png"]
+                self.fsky = AllSprites["skyFrontNormal.png"]
+                self.bsky = AllSprites["skyBackNormal.png"]
 
+                self.bhill2 = AllSprites["groundBackNormal.png"]
+                self.fhill2 = AllSprites["groundFrontNormal.png"]
+                self.fsky2 = AllSprites["skyFrontNormal.png"]
+                self.bsky2 = AllSprites["skyBackNormal.png"]
                 
                 self.background = AllSprites["backgroundNormal.png"]
 
             self.screen.blit(self.background, (0, 0))
             self.screen.blit(self.sun, (0, 0))
-            self.screen.blit(self.fhill, (0, 534))
-            self.screen.blit(self.bhill, (0, 593))
+            
+            self.screen.blit(self.bsky, (self.backobjects.bskyx,0))
+            self.screen.blit(self.bsky2, (self.backobjects.bskyx2,0))
+            self.screen.blit(self.bhill, (self.backobjects.bhillx, 534))
+            self.screen.blit(self.bhill2, (self.backobjects.bhillx2, 534))
 
+            self.screen.blit(self.fhill, (self.backobjects.fhillx, 593))
+            self.screen.blit(self.fhill2, (self.backobjects.fhillx2, 593))
+            self.screen.blit(self.fsky, (self.backobjects.fskyx,0))
+            self.screen.blit(self.fsky2, (self.backobjects.fskyx2,0))
 
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
@@ -99,6 +118,95 @@ class Screen:
  
         
         pygame.display.update()
+
+class BackObjects:
+    def __init__(self):
+        self.width = 1015
+        self.speedf = 10
+        self.speedb = 5
+        self.min = -self.width
+        self.max = self.width
+        
+        self.fskyx = 0
+        self.bskyx = 0
+        self.fhillx = 0
+        self.bhillx = 0
+        
+        self.fskyx2 = self.width
+        self.bskyx2 = self.width
+        self.fhillx2 = self.width
+        self.bhillx2 = self.width
+
+    def backupdate(self, inverse):
+        if inverse:
+            self.fskyx += self.speedf
+            self.bskyx += self.speedb
+            self.fhillx += self.speedf
+            self.bhillx += self.speedb
+
+            if self.fskyx > self.max:
+                self.fskyx = self.min
+
+            if self.bskyx > self.max:
+                self.bskyx = self.min
+
+            if self.bhillx > self.max:
+                self.bhillx = self.min
+
+            if self.fhillx > self.max:
+                self.fhillx = self.min
+            
+            self.fskyx2 += self.speedf
+            self.bskyx2 += self.speedb
+            self.fhillx2 += self.speedf
+            self.bhillx2 += self.speedb
+
+            if self.fskyx2 > self.max:
+                self.fskyx2 = self.min
+
+            if self.bskyx2 > self.max:
+                self.bskyx2 = self.min
+
+            if self.bhillx2 > self.max:
+                self.bhillx2 = self.min
+
+            if self.fhillx2 > self.max:
+                self.fhillx2 = self.min
+
+        else:
+            self.bskyx -= self.speedb
+            self.fskyx -= self.speedf
+            self.fhillx -= self.speedf
+            self.bhillx -= self.speedb
+
+            if self.fskyx < self.min:
+                self.fskyx = self.max
+
+            if self.bskyx < self.min:
+                self.bskyx = self.max
+
+            if self.bhillx < self.min:
+                self.bhillx = self.max
+
+            if self.fhillx < self.min:
+                self.fhillx = self.max
+                
+            self.fskyx2 -= self.speedf
+            self.bskyx2 -= self.speedb
+            self.fhillx2 -= self.speedf
+            self.bhillx2 -= self.speedb
+
+            if self.fskyx2 < self.min:
+                self.fskyx2 = self.max
+
+            if self.bskyx2 < self.min:
+                self.bskyx2 = self.max
+
+            if self.bhillx2 < self.min:
+                self.bhillx2 = self.max
+
+            if self.fhillx2 < self.min:
+                self.fhillx2 = self.max
 
 
 class Clouds:
@@ -117,10 +225,10 @@ class Clouds:
                     self.cloudsinverted.append(sprite)
 
         for i in range(0, self.cloudnum):
-            # Random width
-            # Random height
-            # Random speed
-            # Random normal cloud
+            # Random width [0]
+            # Random height [1]
+            # Random speed [2]
+            # Random normal cloud [3]
             self.clouds.append([random.randrange(100, 900),random.randrange(117, 500), random.randint(1,2), self.cloudimages[random.randint(0,len(self.cloudimages) - 1)]])
 
     def cloudupdate(self):
