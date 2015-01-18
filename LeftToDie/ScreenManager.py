@@ -140,6 +140,7 @@ class Screen:
             elif keys[pygame.K_LEFT]:
                 self.velocity[0] += -3.0
             elif keys[pygame.K_DOWN]:
+                self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                 self.state = "VICTORYLEAP"
 
             if abs(self.velocity[0]) > 10.0:
@@ -173,12 +174,11 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "VICTORYLEAP":
-            self.mainplayer.image = AllSprites['playerJumpNormal.png']
             if self.playerpos[1] < -64:
+                self.currentLevel += 1
                 self.state = "LIFESCREEN"
                 self.velocity[1] = 0
             else:
-                self.lock = False
                 self.velocity[1] = -25.0
 
             if abs(self.velocity[0]) > 10.0:
@@ -235,7 +235,7 @@ class Screen:
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                 elif tile.name == "block":
-##                    print("COLLISION DETECTED!")
+                    print("COLLISION DETECTED!")
                     # Reposition the player
                     # Finds center points of the boundingRects
                     playerPos = [previouspos[0] + 16, previouspos[1] + 16]
@@ -243,18 +243,18 @@ class Screen:
 
                     # Finds diff vector between player and tile
                     diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])
-##                    print('diff',diff)
+                    print('diff',diff)
                 
                     # If x is larger than the y, then we know that it is a horizontal collision
                     if abs(diff[0]) >= abs(diff[1]):
                         # If x is positive, then we reset player on the right of the tile
                         if  diff[0] > 0:
                             playerRect.left = tileRect.right
-##                            print('X detected')
+                            print('X detected')
                         # Else if negative, we set the player left of the tile
                         else:
                             playerRect.right = tileRect.left
-##                            print('X opposite')
+                            print('X opposite')
 
                     # If y is larger than x, then there is a vertical collision
                     elif abs(diff[1]) >= abs(diff[0]):
