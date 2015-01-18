@@ -22,6 +22,10 @@ class ScreenShaker:
             else:
                 self.value = randint(-self.intensity, self.intensity), randint(-self.intensity, self.intensity)
 
+    def stop(self):
+        self.active = False
+        self.value = (0,0)
+
     def shake(self, intensity, length):
         self.active = True
         self.intensity = intensity

@@ -30,4 +30,4 @@ while True:
 
     window.blit(image, (0, 0), ((frame%columns)*frameWidth, row*frameHeight, frameWidth, frameHeight))
     pygame.display.update()
-    clock.tick(10)
+    clock.tick(64)

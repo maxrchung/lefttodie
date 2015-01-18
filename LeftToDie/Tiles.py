@@ -85,6 +85,7 @@ class TilesArray:
                 x+=1
             y+=1
 
+
      def make_inverse(self):
         x = 0
         y = 0

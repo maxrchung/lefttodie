@@ -27,6 +27,9 @@ class SpriteSheets():
 
 #animate sprites
 class Animate():
+
+    #pos = [100, 600]
+
     def __init__(self, image, frames, columns, timer, imagew, imageh):
 
         #image = Spritesheet you wantto use from "AllSprites" dictionary. ex: AllSprites['playerIdleNormal.png]
@@ -40,6 +43,7 @@ class Animate():
             self.image = image 
             self.frame = -1
             self.timer = timer
+            self.timePassed = 0
             self.frames = frames
             self.columns = columns
             self.clock = pygame.time.Clock()
@@ -51,14 +55,16 @@ class Animate():
             raise SystemExit
 
     def Aupdate(self):
+        self.timePassed += self.clock.tick()
+        if self.timePassed > self.timer:
+            self.timePassed = 0
             self.frame += 1
             if self.frame > self.frames - 1:
-                self.frame = 0
+                self.frame = -1
 
     def draw(self, win,  x, y):
         #x, y are where on the screen you want the sprite to draw
         win.blit(self.image, (x, y), ((self.frame % self.columns) * self.imagew, 0, self.imagew, self.imageh))
-        self.clock.tick(self.timer)
 
 SpriteSheet = SpriteSheets("Art")
 AllSprites = SpriteSheet.loadAll()

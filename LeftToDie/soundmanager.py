@@ -2,18 +2,21 @@ import pygame
 
 class soundmanager():
     def __init__(self):
-        pygame.mixer.init(frequency = 44100, size = -16, channels = 2, buffer = 4096)
-
         # Preload sounds so we don't run into processing issues
         self.syobon = pygame.mixer.music.load("Sounds/syobon.mp3")
-        self.jumpSound = pygame.mixer.Sound("Sounds/jump.wav")
-        self.deathSound = pygame.mixer.Sound("Sounds/death.wav")
-        self.levelDieSound = pygame.mixer.Sound("Sounds/levelDie.wav")
-        self.levelUpSound = pygame.mixer.Sound("Sounds/levelUp.wav")
-        self.inverseSound = pygame.mixer.Sound("Sounds/inverse.wav")
-
         # Loop music
         pygame.mixer.music.play(-1)
+
+        self.jumpSound = pygame.mixer.Sound("Sounds/jump.wav")
+        self.jumpSound.set_volume(0.5)
+        self.deathSound = pygame.mixer.Sound("Sounds/death.wav")
+        self.deathSound.set_volume(0.5)
+        self.levelDieSound = pygame.mixer.Sound("Sounds/levelDie.wav")
+        self.levelDieSound.set_volume(0.5)
+        self.levelUpSound = pygame.mixer.Sound("Sounds/levelUp.wav")
+        self.levelUpSound.set_volume(0.5)
+        self.inverseSound = pygame.mixer.Sound("Sounds/inverse.wav")
+        self.inverseSound.set_volume(0.5)
 
     def playsound(self, soundname):
         if soundname == "jump":
