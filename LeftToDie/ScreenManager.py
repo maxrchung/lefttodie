@@ -22,7 +22,7 @@ class Screen:
 
         pygame.display.set_caption("Left to Die")
         pygame.font.init()
-        self.fontpath = pygame.font.match_font('lucidasans')
+        self.fontpath = pygame.font.match_font('comicsansms')
         self.font = pygame.font.Font(self.fontpath, 28)
         self.velocity = [.03, 0]
         self.playerpos = [64, 600]
@@ -154,12 +154,10 @@ class Screen:
             self.velocity[1] += 3.2
             if self.velocity[1] > 15.0:
                 self.velocity[1] = 15.0
-
             if self.playerpos[0]+8 < 0:
                 self.playerpos[0] = -8
             elif self.playerpos[0] + 24 > 1024:
                 self.playerpos[0] = 1024 - 24
-
             self.mainplayer.Aupdate()
             self.clouds.cloudupdate(self.left)
             self.backobjects.backupdate(self.left)
@@ -172,7 +170,6 @@ class Screen:
 
         elif self.state == "ENDSCREEN":
             pass
-
     def checkCollision(self, previouspos, playerpos, tiles):
         # Make our playerRect based on the given position
         playerRect = pygame.Rect(playerpos[0] + 8, playerpos[1] + 8, 16, 24)
@@ -180,7 +177,6 @@ class Screen:
             # Don't care if it's empty
             if tile.name == "empty":
                 continue
-
             tileRect = pygame.Rect(tile.x*32, tile.y*32, 32, 32)
                 
             if playerRect.colliderect(tileRect):
@@ -310,11 +306,11 @@ class Screen:
 
 class BackObjects:
     def __init__(self):
-        self.width = 1024
-        self.speedf = 20
-        self.speedb = 10
-        self.min = -self.width + 6
-        self.max = self.width - 6
+        self.width = 1022
+        self.speedf = 5
+        self.speedb = 2.5
+        self.min = -self.width
+        self.max = self.width
         
         self.fskyx = 0
         self.bskyx = 0
@@ -333,34 +329,34 @@ class BackObjects:
             self.fhillx += self.speedf
             self.bhillx += self.speedb
 
-            if self.fskyx > self.max:
-                self.fskyx = self.min + 10
+            if self.fskyx > self.width:
+                self.fskyx = self.min + 5
 
-            if self.bskyx > self.max:
+            if self.bskyx > self.width:
                 self.bskyx = self.min
 
-            if self.bhillx > self.max:
+            if self.bhillx > self.width:
                 self.bhillx = self.min
 
-            if self.fhillx > self.max:
-                self.fhillx = self.min + 10
+            if self.fhillx > self.width:
+                self.fhillx = self.min + 5
             
             self.fskyx2 += self.speedf
             self.bskyx2 += self.speedb
             self.fhillx2 += self.speedf
             self.bhillx2 += self.speedb
 
-            if self.fskyx2 > self.max:
-                self.fskyx2 = self.min + 10
+            if self.fskyx2 > self.width:
+                self.fskyx2 = self.min + 5
 
-            if self.bskyx2 > self.max:
-                self.bskyx2 = self.min 
+            if self.bskyx2 > self.width:
+                self.bskyx2 = self.min
 
-            if self.bhillx2 > self.max:
+            if self.bhillx2 > self.width:
                 self.bhillx2 = self.min
 
-            if self.fhillx2 > self.max:
-                self.fhillx2 = self.min + 10
+            if self.fhillx2 > self.width:
+                self.fhillx2 = self.min + 5
 
         else:
             self.bskyx -= self.speedb
@@ -369,16 +365,16 @@ class BackObjects:
             self.bhillx -= self.speedb
 
             if self.fskyx < -self.width:
-                self.fskyx = self.max - 10
+                self.fskyx = self.max - 5
 
             if self.bskyx < -self.width:
-                self.bskyx = self.max - 5
+                self.bskyx = self.max
 
             if self.bhillx < -self.width:
-                self.bhillx = self.max - 5
+                self.bhillx = self.max
 
             if self.fhillx < -self.width:
-                self.fhillx = self.max - 10
+                self.fhillx = self.max - 5
                 
             self.fskyx2 -= self.speedf
             self.bskyx2 -= self.speedb
@@ -386,17 +382,16 @@ class BackObjects:
             self.bhillx2 -= self.speedb
 
             if self.fskyx2 < -self.width:
-                self.fskyx2 = self.max - 10
+                self.fskyx2 = self.max - 5
 
             if self.bskyx2 < -self.width:
-                self.bskyx2 = self.max - 5
+                self.bskyx2 = self.max
 
             if self.bhillx2 < -self.width:
-                self.bhillx2 = self.max - 5
+                self.bhillx2 = self.max
 
             if self.fhillx2 < -self.width:
-                self.fhillx2 = self.max - 10
-
+                self.fhillx2 = self.max - 5
 
 class Clouds:
     def __init__(self):
