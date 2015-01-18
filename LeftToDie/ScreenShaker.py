@@ -6,12 +6,12 @@ class ScreenShaker:
         self.active = False
         self.intensity = 0
         self.length = 0
-        self.value = (0, 0)
+        self.value = (0,0)
         self.shakeClock = pygame.time.Clock()
         self.timePassed = 0
 
     def getValue(self):
-        return value
+        return self.value
 
     def update(self):
         if self.active:
@@ -20,7 +20,7 @@ class ScreenShaker:
                 self.active = False
                 self.value = (0, 0)
             else:
-                self.value = randint(-self.intensity, self.intensity)
+                self.value = randint(-self.intensity, self.intensity), randint(-self.intensity, self.intensity)
 
     def shake(self, intensity, length):
         self.active = True
