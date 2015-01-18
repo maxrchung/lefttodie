@@ -64,7 +64,7 @@ class Screen:
 
         #load level 3
 
-        self.TALevel2 = Tiles.TilesArray(self.screen, 'level3.txt')
+        self.TALevel3 = Tiles.TilesArray(self.screen, 'level3.txt')
         self.TALevel3.make_tiles()
         self.TALevel3.make_inverse()
 
