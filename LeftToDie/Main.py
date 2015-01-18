@@ -7,4 +7,3 @@ Global.Screen = Screen()
 while Global.Screen.go:
     Global.Screen.update()
     Global.Screen.draw()
-
