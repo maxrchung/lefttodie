@@ -2,6 +2,7 @@ import pygame
 from Animation import Animate, AllSprites
 import random
 import sys
+import Tiles
 
 class Screen:
     def __init__(self):
@@ -26,6 +27,8 @@ class Screen:
         self.lives = 3
         self.l_screen_clock = pygame.time.Clock()
         self.l_screen_time = 0
+
+
                                               
     def update(self):
         for event in pygame.event.get():
