@@ -133,6 +133,7 @@ class Screen:
             elif keys[pygame.K_LEFT]:
                 self.velocity[0] += -3.0
             elif keys[pygame.K_DOWN]:
+                self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                 self.state = "VICTORYLEAP"
 
             if abs(self.velocity[0]) > 10.0:
@@ -169,13 +170,12 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "VICTORYLEAP":
-            self.mainplayer.image = AllSprites['playerJumpNormal.png']
             if self.playerpos[1] < -64:
+                self.currentLevel += 1
                 self.state = "LIFESCREEN"
                 self.velocity[1] = 0
                 self.l_screen_clock.tick()
             else:
-                self.lock = False
                 self.velocity[1] = -25.0
 
             if abs(self.velocity[0]) > 10.0:
