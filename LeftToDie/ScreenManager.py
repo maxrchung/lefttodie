@@ -42,34 +42,43 @@ class Screen:
         self.l_screen_time = 0
 
         self.jumped = False
-        #Load level 1
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
         self.TALevel1.make_inverse()
-        self.TALevel1.mapfile.close()
-
-        #create level lists
+        
         self.levels = [self.TALevel1]
         self.tiles = [self.TALevel1.tiles]
         self.tilesInverse = [self.TALevel1.inverted_tiles]
         self.currentLevel = 0
         self.currentTiles = self.tiles[self.currentLevel]
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
+        print(self.currentTilesInverse)
 
-        #load level 2
         self.TALevel2 = Tiles.TilesArray(self.screen, 'level2.txt')
         self.TALevel2.make_tiles()
         self.TALevel2.make_inverse()
-        self.TALevel2.mapfile.close()
 
         self.levels.append(self.TALevel2)
         self.tiles.append(self.TALevel2.tiles)
         self.tilesInverse.append(self.TALevel2.inverted_tiles)
 
         #load level 3
-        
 
-        
+        self.TALevel2 = Tiles.TilesArray(self.screen, 'level3.txt')
+        self.TALevel3.make_tiles()
+        self.TALevel3.make_inverse()
+
+        self.levels.append(self.TALevel3)
+        self.tiles.append(self.TALevel3.tiles)
+        self.tilesInverse.append(self.TALevel3.inverted_tiles)
+
+        self.TALevel4 = Tiles.TilesArray(self.screen, 'level4.txt')
+        self.TALevel4.make_tiles()
+        self.TALevel4.make_inverse()
+
+        self.levels.append(self.TALevel4)
+        self.tiles.append(self.TALevel4.tiles)
+        self.tilesInverse.append(self.TALevel4.inverted_tiles)  
 
     def update(self):
         self.leftPressed = False
@@ -105,7 +114,6 @@ class Screen:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                 self.playerpos = self.levels[self.currentLevel].startpos
-                self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
             if self.left:
@@ -151,6 +159,7 @@ class Screen:
             elif keys[pygame.K_LEFT]:
                 self.velocity[0] += -3.0
             elif keys[pygame.K_DOWN]:
+                self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                 self.state = "VICTORYLEAP"
 
             if abs(self.velocity[0]) > 10.0:
@@ -164,7 +173,10 @@ class Screen:
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
 
-            self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
+            if self.left:
+                self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
+            else:
+                self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
 
             if abs(self.velocity[0]) > 0.1:
                 self.velocity[0] *= 0.6
@@ -184,12 +196,12 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "VICTORYLEAP":
-            self.mainplayer.image = AllSprites['playerJumpNormal.png']
             if self.playerpos[1] < -64:
+                self.currentLevel += 1
                 self.state = "LIFESCREEN"
                 self.velocity[1] = 0
+                self.l_screen_clock.tick()
             else:
-                self.lock = False
                 self.velocity[1] = -25.0
 
             if abs(self.velocity[0]) > 10.0:
@@ -246,7 +258,7 @@ class Screen:
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                 elif tile.name == "block":
-                    print("COLLISION DETECTED!")
+##                    print("COLLISION DETECTED!")
                     # Reposition the player
                     # Finds center points of the boundingRects
                     playerPos = [previouspos[0] + 16, previouspos[1] + 16]
@@ -254,18 +266,18 @@ class Screen:
 
                     # Finds diff vector between player and tile
                     diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])
-                    print('diff',diff)
+##                    print('diff',diff)
                 
                     # If x is larger than the y, then we know that it is a horizontal collision
                     if abs(diff[0]) >= abs(diff[1]):
                         # If x is positive, then we reset player on the right of the tile
                         if  diff[0] > 0:
                             playerRect.left = tileRect.right
-                            print('X detected')
+##                            print('X detected')
                         # Else if negative, we set the player left of the tile
                         else:
                             playerRect.right = tileRect.left
-                            print('X opposite')
+##                            print('X opposite')
 
                     # If y is larger than x, then there is a vertical collision
                     elif abs(diff[1]) >= abs(diff[0]):
@@ -343,8 +355,13 @@ class Screen:
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
         
-            for tile in self.currentTiles:
-                tile.draw()
+            if self.left:
+                for tile in self.currentTilesInverse:
+                    tile.draw()
+
+            else:
+                for tile in self.currentTiles:
+                    tile.draw()
 
             self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
 
