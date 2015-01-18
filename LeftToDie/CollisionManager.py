@@ -32,8 +32,10 @@ def checkCollision(player, tiles):
 
                 # If y is larger than x, then there is a vertical collision
                 else:
-                    #If y is positive, then reset player on the top of the tile
-                    if diff[1] > 0:
+                    # If y is negative, then reset player on the top of the tile
+                    # Note that this is opposite of x calclations because we have to keep
+                    # in mind that y is reversed according to top left coordinates
+                    if diff[1] < 0:
                         player.boundingRect.bottom = tile.boundingRect.top
                     else:
                         player.boundingRect.top = tile.boundingRect.bottom
