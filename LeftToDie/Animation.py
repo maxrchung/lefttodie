@@ -62,36 +62,3 @@ class Animate():
 
 SpriteSheet = SpriteSheets("Art")
 AllSprites = SpriteSheet.loadAll()
-
-##player = Animate(AllSprites["playerMoveNormal.png"], 2, 2, 10, 32, 32)
-##playerI = Animate(AllSprites["playerMoveInverse.png"], 2, 2, 10, 32, 32)
-##
-##w = 1280
-##h = 720
-##window = pygame.display.set_mode((w, h))
-##
-##
-##
-##
-##x = 0
-##y = 0
-##
-##w = 1280
-##z = 720
-##while True:
-##    for event in pygame.event.get():
-##        if event.type == pygame.QUIT:
-##            pygame.quit();
-##            sys.exit();
-##                            
-##    window.fill((255, 255, 255))
-##    player.Aupdate()
-##    player.draw(window, x,y)
-##    playerI.Aupdate()
-##    playerI.draw(window, w, z)
-##    pygame.display.update()
-##    x+= 3
-##    y+= 3
-##    w-= 3
-##    z-= 3
-

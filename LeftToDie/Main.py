@@ -1,12 +1,10 @@
-from GameManager import GameManager
-
+from ScreenManager import Screen
+import Global
 import sys,pygame
 
-game = GameManager("STARTSCREEN")
+Global.Screen = Screen()
 
-while game.go:
-    game.run()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+while Global.Screen.go:
+    Global.Screen.update()
+    Global.Screen.draw()
+
