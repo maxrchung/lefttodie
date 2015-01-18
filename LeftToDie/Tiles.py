@@ -1,5 +1,5 @@
 import pygame
-import Animation
+from Animation import Animate, AllSprites
 import Tiles
 class BlockTile:
     def __init__(self, x, y, screen, is_inverted, is_spawn): #x and y in grid both start at zero
@@ -19,7 +19,7 @@ class BlockTile:
             self.image = AllSprites["tileBlockNormal.png"]
 
     def draw(self):
-         self.screen.blit(self.image,(x*32,y*32))
+        self.screen.blit(self.image,(self.x*32,self.y*32))
 
 class SpikeTile:
     def __init__(self, x, y, screen, is_inverted):
@@ -35,7 +35,7 @@ class SpikeTile:
             self.image = AllSprites["tileSpikeNormal.png"]
 
     def draw(self):
-         self.screen.blit(self.image,(x*32,y*32))
+         self.screen.blit(self.image,(self.x*32,self.y*32))
 
 
 class EndTile:
@@ -51,7 +51,7 @@ class EndTile:
         else:
             self.image = AllSprites["tileEndNormal.png"]
     def draw(self):
-         self.screen.blit(self.image,(x*32,y*32))
+         self.screen.blit(self.image,(self.x*32,self.y*32))
 
 class EmptyTile:
     def __init__(self,x,y):
@@ -59,18 +59,22 @@ class EmptyTile:
         self.y = y
         self.name = "empty"
 
+    def draw(self):
+        pass
 
 class TilesArray:
     def __init__(self, screen, mapfile):
         self.screen = screen
         self.mapfile = open(mapfile, 'r')
+        print(self.mapfile)
         self.tiles = []
         self.inverted_tiles = []
 
     def make_tiles(self):
         x = 0
         y = 0
-        for row in self.mapfile:
+        lines = self.mapfile.readlines()
+        for row in lines:
             for char in row:
                 if char == "B":
                     self.tiles.append(BlockTile(x, y, self.screen, False, False)) #normal block tile
@@ -83,6 +87,7 @@ class TilesArray:
                 elif char == "V":
                     self.tiles.append(EndTile(x, y, self.screen, False)) #victory/end tile
                 x+=1
+            x = 0
             y+=1
             
     def make_inverse(self):
@@ -100,6 +105,7 @@ class TilesArray:
                     self.inverted_tiles.append(EmptyTile(x, y)) #empty tile
                 elif char == "V":
                     self.inverted_tiles.append(EndTile(x, y, self.screen, True)) #victory/end tile
-                    x+=1
+                x+=1
+            x = 0
             y+=1
 

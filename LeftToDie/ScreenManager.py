@@ -45,8 +45,11 @@ class Screen:
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
         self.TALevel1.make_inverse()
-        self.level1Tiles = self.TALevel1.tiles
-        self.level1Inverse = self.TALevel1.inverted_tiles
+        self.tiles = [self.TALevel1.tiles]
+        self.tilesInverse = [self.TALevel1.inverted_tiles]
+        self.currentLevel = 0
+        self.currentTiles = self.tiles[self.currentLevel]
+        self.currentTilesInverse = self.tilesInverse[self.currentLevel]
 
     def update(self):
         self.leftPressed = False
@@ -54,7 +57,6 @@ class Screen:
         self.upPressed = False
 
         for event in pygame.event.get():
-            #print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -75,7 +77,6 @@ class Screen:
                     sys.exit()
 
         keys = pygame.key.get_pressed()
-        #print(keys)
             
         if self.state == "LIFESCREEN":
             self.startplayer.Aupdate()
@@ -154,7 +155,7 @@ class Screen:
                 self.jumped = False
                 self.playerpos[1] = 600
 
-            # checkCollision(self.playerpos, tiles)
+            #self.checkCollision(self.playerpos, tiles)
 
             self.mainplayer.Aupdate()
             self.clouds.cloudupdate(self.left)
@@ -178,7 +179,7 @@ class Screen:
                 continue
                 
             if playerRect.colliderect(tile.boundingRect):
-                if tile.name == "Spike":
+                if tile.name == "spikes":
                     # DEATH DROP STATE EXECUTE
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
@@ -186,7 +187,7 @@ class Screen:
                     # VICTORY LEAP STATE EXECUTE
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
-                elif tile.name == "Block":
+                elif tile.name == "block":
                     # Reposition the player
                     # Finds center points of the boundingRects
                     playerPos = playerRect.center
@@ -276,6 +277,9 @@ class Screen:
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
         
+            for tile in self.currentTiles:
+                tile.draw()
+
             self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
 
         elif self.state == "VICTORYLEAP":
