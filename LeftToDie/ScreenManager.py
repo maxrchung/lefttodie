@@ -46,6 +46,7 @@ class Screen:
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
         self.TALevel1.make_inverse()
+        self.TALevel1.mapfile.close()
 
         #create level lists
         self.levels = [self.TALevel1]
@@ -56,6 +57,16 @@ class Screen:
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
 
         #load level 2
+        self.TALevel2 = Tiles.TilesArray(self.screen, 'level2.txt')
+        self.TALevel2.make_tiles()
+        self.TALevel2.make_inverse()
+        self.TALevel2.mapfile.close()
+
+        self.levels.append(self.TALevel2)
+        self.tiles.append(self.TALevel2.tiles)
+        self.tilesInverse.append(self.TALevel2.inverted_tiles)
+
+        #load level 3
         
 
         
@@ -140,7 +151,6 @@ class Screen:
             elif keys[pygame.K_LEFT]:
                 self.velocity[0] += -3.0
             elif keys[pygame.K_DOWN]:
-                self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                 self.state = "VICTORYLEAP"
 
             if abs(self.velocity[0]) > 10.0:
@@ -174,11 +184,12 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "VICTORYLEAP":
+            self.mainplayer.image = AllSprites['playerJumpNormal.png']
             if self.playerpos[1] < -64:
-                self.currentLevel += 1
                 self.state = "LIFESCREEN"
                 self.velocity[1] = 0
             else:
+                self.lock = False
                 self.velocity[1] = -25.0
 
             if abs(self.velocity[0]) > 10.0:
