@@ -22,16 +22,29 @@ class Screen:
 
                                               
     def update(self):
-
+##        print("UPDATE LOOP")
         if self.state == "LIFESCREEN":
             self.startplayer.Aupdate()
         elif self.state == "GAMESCREEN":
+            for event in pygame.event.get():
+                print(event)
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        print('INPUT LEFT')
+                        self.left = True
+                    elif event.key == pygame.K_RIGHT:
+                        self.left = False       
             self.clouds.cloudupdate()
             
         elif self.state == "ENDSCREEN":
             pass
 
-        self.draw()
+##        self.draw()
+
 
     def draw(self):
         if self.state == "LIFESCREEN":
@@ -48,7 +61,8 @@ class Screen:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                                               
-        elif self.state == "GAMESCREEN":
+        elif self.state == "GAMESCREEN":             
+##            print('DRAW LOOP')
             if self.left:
                 self.background = AllSprites["backgroundInverse.png"]
                 for i in range(0, len(self.cloudlist)):
@@ -66,18 +80,7 @@ class Screen:
 
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-                elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_LEFT:
-                        self.left = True
-                    elif event.key == pygame.K_RIGHT:
-                        self.left = False
-            
+           
         elif self.state == "ENDSCREEN":
             pass            
  
