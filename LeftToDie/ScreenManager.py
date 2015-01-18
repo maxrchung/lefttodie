@@ -25,7 +25,7 @@ class Screen:
         self.fontpath = pygame.font.match_font('lucidasans')
         self.font = pygame.font.Font(self.fontpath, 28)
         self.velocity = [.03, 0]
-        self.playerpos = [100, 600]
+        self.playerpos = [64, 600]
 
         self.clouds = Clouds()
         self.cloudlist = self.clouds.clouds
