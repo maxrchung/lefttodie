@@ -3,6 +3,7 @@ from Animation import Animate, AllSprites
 import random
 import sys
 from soundmanager import soundmanager
+import math
 
 class Screen:
     def __init__(self):
@@ -25,17 +26,19 @@ class Screen:
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
         
         self.backobjects = BackObjects()
-        self.startplayer= Animate(AllSprites['move1.png'], 16, 16, 64, 32, 32)
-        self.mainplayer= Animate(AllSprites['move1.png'], 16, 16, 64, 32, 32)
+        self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 128, 32, 32)
+        self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
 
         self.current_level = 1
         self.lives = 3
         self.l_screen_clock = pygame.time.Clock()
         self.l_screen_time = 0
 
+        self.jumped = False
+
     def update(self):
         for event in pygame.event.get():
-            print(event)
+            #print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -47,27 +50,7 @@ class Screen:
                     self.left = False
 
         keys = pygame.key.get_pressed()
-        print(keys)
-
-        if self.velocity[0] > .06:
-            self.velocity[0] -= .01
-
-        if keys[pygame.K_RIGHT]:
-            self.playerpos[0] += self.playerpos[0] * self.velocity[0]
-            self.velocity[0] += .01
-            
-        elif keys[pygame.K_LEFT]:
-            self.playerpos[0] += self.playerpos[0] * -self.velocity[0]
-            self.velocity[0] += .01
-        else:
-            self.velocity[0] = .03
-
-        if self.playerpos[1] < 600:
-            self.playerpos[1] += 50
-            
-        elif keys[pygame.K_UP]:
-            self.playerpos[1] -= 100
-            self.sound.playsound("jump")
+        #print(keys)
             
         if self.state == "LIFESCREEN":
             self.startplayer.Aupdate()
@@ -77,6 +60,55 @@ class Screen:
                 self.l_screen_time = 0
 
         elif self.state == "GAMESCREEN":
+            # Right movement
+            if keys[pygame.K_RIGHT]:
+                self.velocity[0] = 10.0
+            
+            # Left movement
+            elif keys[pygame.K_LEFT]:
+                self.velocity[0] = -10.0
+
+            # Jump
+            if keys[pygame.K_UP] and not self.jumped:
+                self.jumped = True
+                self.velocity[1] = -20.0
+
+            if abs(self.velocity[0]) > 10.0:
+                if self.velocity[0] > 0:
+                    self.velocity[0] = 10.0
+                elif self.velocity[0] < 0:
+                    self.velocity[0] = -10.0
+
+            self.playerpos[0] += self.velocity[0]
+            self.playerpos[1] += self.velocity[1]
+
+            if self.velocity[0] > 0:
+                self.velocity[0] -= 1.5
+                if self.velocity[0] < 0:
+                    self.velocity[0] = 0
+            elif self.velocity[0] < 0:
+                self.velocity[0] += 1.5
+                if self.velocity[0] > 0:
+                    self.velocity[0] = 0
+            else:
+                self.velocity[0] = 0
+                
+
+            # Gravity application
+            self.velocity[1] += 2.5
+
+            if self.playerpos[0] < 0:
+                self.playerpos[0] = 0
+            elif self.playerpos[0] > 1024:
+                self.playerpos[0] = 1024
+
+            if self.playerpos[1] > 600:
+                self.jumped = False
+                self.playerpos[1] = 600
+
+            print(self.playerpos)
+            print()
+
             self.mainplayer.Aupdate()
             self.clouds.cloudupdate()
             self.backobjects.backupdate(self.left)
