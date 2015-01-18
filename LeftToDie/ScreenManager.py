@@ -227,7 +227,7 @@ class Screen:
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                 elif tile.name == "block":
-                    print("COLLISION DETECTED!")
+##                    print("COLLISION DETECTED!")
                     # Reposition the player
                     # Finds center points of the boundingRects
                     playerPos = [previouspos[0] + 16, previouspos[1] + 16]
@@ -235,18 +235,18 @@ class Screen:
 
                     # Finds diff vector between player and tile
                     diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])
-                    print('diff',diff)
+##                    print('diff',diff)
                 
                     # If x is larger than the y, then we know that it is a horizontal collision
                     if abs(diff[0]) >= abs(diff[1]):
                         # If x is positive, then we reset player on the right of the tile
                         if  diff[0] > 0:
                             playerRect.left = tileRect.right
-                            print('X detected')
+##                            print('X detected')
                         # Else if negative, we set the player left of the tile
                         else:
                             playerRect.right = tileRect.left
-                            print('X opposite')
+##                            print('X opposite')
 
                     # If y is larger than x, then there is a vertical collision
                     elif abs(diff[1]) >= abs(diff[0]):
