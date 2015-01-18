@@ -18,26 +18,29 @@ class Screen:
         self.lives = 3
         self.l_screen_clock = pygame.time.Clock()
         self.l_screen_time = 0
+        self.fhill = AllSprites["groundFrontNormal.png"]
+        self.bhill = AllSprites["groundBackNormal.png"]
 
 
                                               
     def update(self):
 ##        print("UPDATE LOOP")
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    print('INPUT LEFT')
+                    self.left = True
+                elif event.key == pygame.K_RIGHT:
+                    self.left = False     
+
         if self.state == "LIFESCREEN":
             self.startplayer.Aupdate()
         elif self.state == "GAMESCREEN":
-            for event in pygame.event.get():
-                print(event)
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        print('INPUT LEFT')
-                        self.left = True
-                    elif event.key == pygame.K_RIGHT:
-                        self.left = False       
+##                print(event)  
             self.clouds.cloudupdate()
             
         elif self.state == "ENDSCREEN":
@@ -68,19 +71,29 @@ class Screen:
                 for i in range(0, len(self.cloudlist)):
                     if "Inverse" not in self.cloudlist[i][3]:
                         self.cloudlist[i][3] = self.cloudsinverted[int(self.cloudlist[i][3][5]) - 1]
+                self.fhill = AllSprites["groundBackInverse.png"]
+                self.bhill = AllSprites["groundFrontInverse.png"]
+                
                                  
             else:
                 for i in range(0, len(self.cloudlist)):
                     if "Normal" not in self.cloudlist[i][3]:
                         self.cloudlist[i][3] = self.cloudsnormal[int(self.cloudlist[i][3][5]) - 1]
-  
+
+                self.fhill = AllSprites["groundBackNormal.png"]
+                self.bhill = AllSprites["groundFrontNormal.png"]
+
+                
                 self.background = AllSprites["backgroundNormal.png"]
 
             self.screen.blit(self.background, (0, 0))
+            self.screen.blit(self.fhill, (0, 534))
+            self.screen.blit(self.bhill, (0, 593))
+
 
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
-           
+
         elif self.state == "ENDSCREEN":
             pass            
  
