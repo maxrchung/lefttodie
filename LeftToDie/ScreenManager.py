@@ -7,6 +7,7 @@ import math
 
 class Screen:
     def __init__(self):
+        pygame.init()
         self.go = True
         self.state = "LIFESCREEN"
         self.left = False
@@ -14,6 +15,7 @@ class Screen:
         self.screenh = 768
         self.sound = soundmanager()
         self.screen = pygame.display.set_mode((self.screenw, self.screenh))
+        pygame.display.set_caption("Left to Die")
         pygame.font.init()
         self.fontpath = pygame.font.match_font('lucidasans')
         self.font = pygame.font.Font(self.fontpath, 28)
@@ -37,6 +39,10 @@ class Screen:
         self.jumped = False
 
     def update(self):
+        self.leftPressed = False
+        self.rightPressed = False
+        self.upPressed = False
+
         for event in pygame.event.get():
             #print(event)
             if event.type == pygame.QUIT:
@@ -44,10 +50,19 @@ class Screen:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    self.leftPressed = True
                     self.left = True
                     
                 elif event.key == pygame.K_RIGHT:
+                    self.rightPressed = True
                     self.left = False
+
+                elif event.key == pygame.K_UP:
+                    self.upPressed = True
+
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
 
         keys = pygame.key.get_pressed()
         #print(keys)
@@ -60,18 +75,44 @@ class Screen:
                 self.l_screen_time = 0
 
         elif self.state == "GAMESCREEN":
+            if self.left:
+                if self.leftPressed:
+                    self.sound.playsound("inverse")
+                if self.jumped:
+                    if not self.mainplayer.image == AllSprites['playerJumpInverse.png']:
+                        self.mainplayer = Animate(AllSprites['playerJumpInverse.png'], 1, 1, 1000, 32, 32)
+                elif keys[pygame.K_LEFT]:
+                    if not self.mainplayer.image == AllSprites['playerMoveInverse.png']:
+                        self.mainplayer = Animate(AllSprites['playerMoveInverse.png'], 2, 2, 128, 32, 32)
+                else:
+                    if not self.mainplayer.image == AllSprites['playerIdleInverse.png']:
+                        self.mainplayer = Animate(AllSprites['playerIdleInverse.png'], 2, 2, 500, 32, 32)
+
+            else:
+                if self.rightPressed:
+                    self.sound.playsound("syobon")
+                if self.jumped:
+                    if not self.mainplayer.image == AllSprites['playerJumpNormal.png']:
+                        self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                elif keys[pygame.K_RIGHT]:
+                    if not self.mainplayer.image == AllSprites['playerMoveNormal.png']:
+                        self.mainplayer = Animate(AllSprites['playerMoveNormal.png'], 2, 2, 128, 32, 32)
+                else:
+                    if not self.mainplayer.image == AllSprites['playerIdleNormal.png']:
+                        self.mainplayer = Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
+
+            if self.upPressed and not self.jumped:
+                self.sound.playsound("jump")
+                self.jumped = True
+                self.velocity[1] = -25.0
+
             # Right movement
             if keys[pygame.K_RIGHT]:
-                self.velocity[0] = 10.0
+                self.velocity[0] += 3.0
             
             # Left movement
             elif keys[pygame.K_LEFT]:
-                self.velocity[0] = -10.0
-
-            # Jump
-            if keys[pygame.K_UP] and not self.jumped:
-                self.jumped = True
-                self.velocity[1] = -20.0
+                self.velocity[0] += -3.0
 
             if abs(self.velocity[0]) > 10.0:
                 if self.velocity[0] > 0:
@@ -82,17 +123,10 @@ class Screen:
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
 
-            if self.velocity[0] > 0:
-                self.velocity[0] -= 1.5
-                if self.velocity[0] < 0:
-                    self.velocity[0] = 0
-            elif self.velocity[0] < 0:
-                self.velocity[0] += 1.5
-                if self.velocity[0] > 0:
-                    self.velocity[0] = 0
+            if abs(self.velocity[0]) > 0.1:
+                self.velocity[0] *= 0.6
             else:
                 self.velocity[0] = 0
-                
 
             # Gravity application
             self.velocity[1] += 2.5
@@ -126,7 +160,6 @@ class Screen:
                                               
         elif self.state == "GAMESCREEN":             
             if self.left:
-                self.sound.playsound("inverse")
                 self.sun = AllSprites["sunInverse.png"]
                 self.background = AllSprites["backgroundInverse.png"]
                 for i in range(0, len(self.cloudlist)):
@@ -143,7 +176,6 @@ class Screen:
                 self.bsky2 = AllSprites["skyBackInverse.png"]
 
             else:
-                self.sound.playsound("syobon")
                 self.sun = AllSprites["sunNormal.png"]
                 self.background = AllSprites["backgroundNormal.png"]
                 for i in range(0, len(self.cloudlist)):
