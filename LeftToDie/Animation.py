@@ -27,6 +27,9 @@ class SpriteSheets():
 
 #animate sprites
 class Animate():
+
+    pos = [100, 600]
+
     def __init__(self, image, frames, columns, timer, imagew, imageh):
 
         #image = Spritesheet you wantto use from "AllSprites" dictionary. ex: AllSprites['playerIdleNormal.png]

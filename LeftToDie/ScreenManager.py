@@ -4,6 +4,9 @@ import random
 import sys
 
 class Screen:
+
+    velocity = [.03, 0]
+
     def __init__(self):
         self.go = True
         self.state = "LIFESCREEN"
@@ -21,6 +24,7 @@ class Screen:
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
 
         self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 5, 32, 32)
+
 
         self.current_level = 1
         self.lives = 3
@@ -54,6 +58,29 @@ class Screen:
             pass
 
     def draw(self):
+
+        keys = pygame.key.get_pressed()
+
+        if self.velocity[0] > .06:
+            self.velocity[0] -= .01
+
+        if keys[pygame.K_RIGHT]:
+            self.startplayer.pos[0] += self.startplayer.pos[0] * self.velocity[0]
+            self.velocity[0] += .01
+        elif keys[pygame.K_LEFT]:
+            self.startplayer.pos[0] += self.startplayer.pos[0] * -self.velocity[0]
+            self.velocity[0] += .01
+        else:
+            self.velocity[0] = .03
+
+        if self.startplayer.pos[1] < 600:
+            self.startplayer.pos[1] += 50
+        elif keys[pygame.K_UP]:
+            self.startplayer.pos[1] -= 100
+
+
+
+
         if self.state == "LIFESCREEN":
             background_colour = (0, 0, 0)
             self.screen.fill(background_colour)
@@ -96,7 +123,10 @@ class Screen:
 
         elif self.state == "ENDSCREEN":
             pass            
- 
+
+        self.startplayer.Aupdate()
+        self.startplayer.draw(self.screen, self.startplayer.pos[0], self.startplayer.pos[1])
+
         
         pygame.display.update()
 
