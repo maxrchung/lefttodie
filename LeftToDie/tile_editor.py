@@ -50,37 +50,39 @@ while(running):
                 tm.save_to_file()
             elif event.key == pygame.K_q:
                 pygame.display.quit()
-        elif event.type == pygame.MOUSEBUTTONUP:
-            print(event.pos)
-            box_x = event.pos[0] // BOX_SIZE
-            box_y = event.pos[1] // BOX_SIZE
-            start_x = box_x * BOX_SIZE
-            start_y = box_y * BOX_SIZE
+        if pygame.mouse.get_pos()[0] <= SCREEN_X_NS:
+            if pygame.mouse.get_pressed()[0]:
+                box_x = pygame.mouse.get_pos()[0] // BOX_SIZE
+                box_y = pygame.mouse.get_pos()[1] // BOX_SIZE
+                start_x = box_x * BOX_SIZE
+                start_y = box_y * BOX_SIZE
 
             #print(start_x,start_y,end_x,end_y)
-            tm.change_cell(box_x, box_y, current_mode)
-            print(box_x + 1, box_y+1)
-            if current_mode == "B":
-                surf.blit(tile,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                #color = pygame.Color(0,0,150,255)
-            if current_mode == "S":
-                color = pygame.Color(0,0,0,255)
-                pygame.draw.rect(surf,color,(start_x,start_y,BOX_SIZE,BOX_SIZE))
-                surf.blit(spikes,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                #color = pygame.Color(150,0,0,255)
-            if current_mode == "X":
-                color = pygame.Color(0,0,0,255)
-                pygame.draw.rect(surf,color,(start_x,start_y,BOX_SIZE,BOX_SIZE))
-            if current_mode == "I":
-                color = pygame.Color(255,255,255, 255)
-                pygame.draw.rect(surf, color, (start_x, start_y, BOX_SIZE, BOX_SIZE))
-            if current_mode == "V":
-                color = pygame.Color(0,150,0,255)
-                pygame.draw.rect(surf, color, (start_x, start_y, BOX_SIZE, BOX_SIZE))
+                tm.change_cell(box_x, box_y, current_mode)
+                print(box_x + 1, box_y+1)
+                if current_mode == "B":
+                    surf.blit(tile,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
+                    #color = pygame.Color(0,0,150,255)
+                if current_mode == "S":
+                    color = pygame.Color(0,0,0,255)
+                    pygame.draw.rect(surf,color,(start_x,start_y,BOX_SIZE,BOX_SIZE))
+                    surf.blit(spikes,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
+                    #color = pygame.Color(150,0,0,255)
+                if current_mode == "X":
+                    color = pygame.Color(0,0,0,255)
+                    pygame.draw.rect(surf,color,(start_x,start_y,BOX_SIZE,BOX_SIZE))
+                if current_mode == "I":
+                    color = pygame.Color(255,255,255, 255)
+                    pygame.draw.rect(surf, color, (start_x, start_y, BOX_SIZE, BOX_SIZE))
+                if current_mode == "V":
+                    color = pygame.Color(0,150,0,255)
+                    pygame.draw.rect(surf, color, (start_x, start_y, BOX_SIZE, BOX_SIZE))
 
 
-            draw_grid(surf)
-            pygame.display.update()
+                draw_grid(surf)
+                pygame.display.update()
+
+
 
             
     
