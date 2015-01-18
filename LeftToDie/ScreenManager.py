@@ -154,17 +154,17 @@ class Screen:
         playerRect = pygame.Rect(playerpos[0] + 8, playerpos[1] + 8, 16, 24)
         for tile in tiles:
             # Don't care if it's empty
-            if tile.name = "Empty":
+            if tile.name == "Empty":
                 continue
                 
             if playerRect.colliderect(tile.boundingRect):
-                if tile.name = "Spike":
+                if tile.name == "Spike":
                     # DEATH DROP STATE EXECUTE
                     pass
-                elif tile.name = "End":
+                elif tile.name == "End":
                     # VICTORY LEAP STATE EXECUTE
                     pass
-                elif tile.name = "Block":
+                elif tile.name == "Block":
                     # Reposition the player
                     # Finds center points of the boundingRects
                     playerPos = playerRect.center
