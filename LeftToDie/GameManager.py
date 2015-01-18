@@ -19,9 +19,8 @@ class GameManager:
         self.screen.draw()
 
     def draw(self):
-        if self.state == "STARTSCREEN":
-            print("I like pie")
-        elif self.state == "LIFESCREEN":
+        
+        if self.state == "LIFESCREEN":
             print("I Do not")
         elif self.state == "GAMESCREEN":
             print("Well you suck")
