@@ -1,5 +1,5 @@
 from ScreenManager import Screen
-
+import ScreenManager
 
 class GameManager:
 

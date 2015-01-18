@@ -1,7 +1,6 @@
 import os, sys
 import pygame
-#import window
-#from pygame.locals import *
+
 
 
 #Class to load spritesheet or parts of the spritesheet
@@ -56,9 +55,9 @@ class Animate():
             if self.frame > self.frames - 1:
                 self.frame = 0
 
-    def draw(self, x, y):
+    def draw(self, win,  x, y):
         #x, y are where on the screen you want the sprite to draw
-        window.blit(self.image, (x, y), ((self.frame % self.columns) * self.imagew, 0, self.imagew, self.imageh))
+        win.blit(self.image, (x, y), ((self.frame % self.columns) * self.imagew, 0, self.imagew, self.imageh))
         self.clock.tick(self.timer)
 
 SpriteSheet = SpriteSheets("Art")
