@@ -2,6 +2,7 @@ import pygame
 from Animation import Animate, AllSprites
 import random
 import sys
+from soundmanager import soundmanager
 
 class Screen:
 
@@ -13,6 +14,7 @@ class Screen:
         self.left = False
         self.screenw = 1024
         self.screenh = 768
+        self.sound = soundmanager()
         self.screen = pygame.display.set_mode((self.screenw, self.screenh))
         pygame.font.init()
         self.fontpath = pygame.font.match_font('lucidasans')
@@ -77,6 +79,8 @@ class Screen:
             self.startplayer.pos[1] += 50
         elif keys[pygame.K_UP]:
             self.startplayer.pos[1] -= 100
+            self.sound.playsound("jump")
+
 
 
 
@@ -90,6 +94,7 @@ class Screen:
                                               
         elif self.state == "GAMESCREEN":             
             if self.left:
+                self.sound.playsound("inverse")
                 self.sun = AllSprites["sunInverse.png"]
                 self.background = AllSprites["backgroundInverse.png"]
                 for i in range(0, len(self.cloudlist)):
@@ -100,6 +105,7 @@ class Screen:
                 
                                  
             else:
+                self.sound.playsound("syobon")
                 self.sun = AllSprites["sunNormal.png"]
                 self.background = AllSprites["backgroundNormal.png"]
                 for i in range(0, len(self.cloudlist)):
