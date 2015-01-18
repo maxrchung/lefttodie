@@ -45,6 +45,7 @@ class Screen:
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
         self.TALevel1.make_inverse()
+        self.TALevel1.mapfile.close()
         print(self.TALevel1.make_tiles())
         self.tiles = [self.TALevel1.tiles]
         self.tilesInverse = [self.TALevel1.inverted_tiles]

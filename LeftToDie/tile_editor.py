@@ -12,6 +12,10 @@ surf = pygame.display.set_mode((SCREEN_X,SCREEN_Y))
 tile = pygame.image.load(os.path.join('Art','tileBlockNormal.png'))
 spikes = pygame.image.load(os.path.join('Art','tileSpikeNormal.png'))
 sidebar = pygame.image.load(os.path.join('Art', 'sidebar.png'))
+itile = pygame.image.load(os.path.join('Art', 'tileBlockInverse.png'))
+ispikes = pygame.image.load(os.path.join('Art', 'tileSpikeInverse.png'))
+end = pygame.image.load(os.path.join('Art', 'tileEndNormalSingle.png'))
+iend = pygame.image.load(os.path.join('Art', 'tileEndInverseSingle.png'))
 def draw_grid(surface):
     for i in range(1,H_BOXES):
         pygame.draw.line(surface, pygame.Color(255,255,255,255), (i*BOX_SIZE,0),(i*BOX_SIZE,SCREEN_Y))
@@ -22,6 +26,36 @@ draw_grid(surf)
 tm = tile_matrix.TileMatrix(H_BOXES,V_BOXES)
 surf.blit(sidebar, pygame.Rect(SCREEN_X_NS, 0 , 200, SCREEN_Y))
 pygame.display.update()
+black = pygame.Color(0,0,0)
+inverted_view = False
+def invert_view(surface,tm):
+
+    for i in range(len(tm.matrix)):
+        for j in range(len(tm.matrix[i])):
+            x = j * BOX_SIZE
+            y = i * BOX_SIZE
+            if(inverted_view):
+                if tm.matrix[i][j] == "B":
+                    surface.blit(tile, pygame.Rect(x, y, BOX_SIZE, BOX_SIZE))
+                elif tm.matrix[i][j] == "S":
+                    pygame.draw.rect(surf,black, (x, y, BOX_SIZE,BOX_SIZE))
+                    surface.blit(spikes, pygame.Rect(x, y, BOX_SIZE, BOX_SIZE))
+                elif tm.matrix[i][j] == "V":
+                    surface.blit(end, pygame.Rect(x,y, BOX_SIZE, BOX_SIZE))
+            else:
+                if tm.matrix[i][j] == "B":
+                    pygame.draw.rect(surf,black, (x, y, BOX_SIZE,BOX_SIZE))
+                    surface.blit(ispikes, pygame.Rect(x, y, BOX_SIZE, BOX_SIZE))
+                elif tm.matrix[i][j] == "S":
+                    surface.blit(itile, pygame.Rect(x, y, BOX_SIZE, BOX_SIZE))
+                elif tm.matrix[i][j] == "V":
+                    surface.blit(iend, pygame.Rect(x,y, BOX_SIZE, BOX_SIZE))
+
+
+
+    draw_grid(surface)
+    pygame.display.update()
+
 
 running = True
 # X is erase, B is Block, S is spikes, I is Iniitial (start point), V is Victory (goal)
@@ -50,6 +84,9 @@ while(running):
                 tm.save_to_file()
             elif event.key == pygame.K_q:
                 pygame.display.quit()
+            elif event.key == pygame.K_SPACE:
+                invert_view(surf,tm)
+                inverted_view = not inverted_view
         if pygame.mouse.get_pos()[0] <= SCREEN_X_NS:
             if pygame.mouse.get_pressed()[0]:
                 box_x = pygame.mouse.get_pos()[0] // BOX_SIZE
@@ -75,8 +112,8 @@ while(running):
                     color = pygame.Color(255,255,255, 255)
                     pygame.draw.rect(surf, color, (start_x, start_y, BOX_SIZE, BOX_SIZE))
                 if current_mode == "V":
-                    color = pygame.Color(0,150,0,255)
-                    pygame.draw.rect(surf, color, (start_x, start_y, BOX_SIZE, BOX_SIZE))
+                    pygame.draw.rect(surf,black,(start_x,start_y,BOX_SIZE,BOX_SIZE))
+                    surf.blit(end,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
 
 
                 draw_grid(surf)

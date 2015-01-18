@@ -5,7 +5,7 @@ class BlockTile:
     def __init__(self, x, y, screen, is_inverted, is_spawn): #x and y in grid both start at zero
         self.x = x
         self.y = y
-        self.rectangle = pygame.Rect(x,y,32,32)
+        self.rectangle = pygame.Rect(x, y, 32, 32)
         self.screen = screen
         self.is_inverted = is_inverted
         self.is_spawn = is_spawn
@@ -19,7 +19,7 @@ class BlockTile:
             self.image = AllSprites["tileBlockNormal.png"]
 
     def draw(self):
-        self.screen.blit(self.image,(self.x,self.y))
+        self.screen.blit(self.image,(self.x *32 ,self.y * 32))
 
 class SpikeTile:
     def __init__(self, x, y, screen, is_inverted):
@@ -35,7 +35,7 @@ class SpikeTile:
             self.image = AllSprites["tileSpikeNormal.png"]
 
     def draw(self):
-         self.screen.blit(self.image,(self.x*32,self.y*32))
+         self.screen.blit(self.image,(self.x*32, self.y*32))
 
 
 class EndTile:
@@ -51,7 +51,7 @@ class EndTile:
         else:
             self.image = AllSprites["tileEndNormal.png"]
     def draw(self):
-         self.screen.blit(self.image,(self.x*32,self.y*32))
+         self.screen.blit(self.image,(self.x*32, self.y*32))
 
 class EmptyTile:
     def __init__(self,x,y):
