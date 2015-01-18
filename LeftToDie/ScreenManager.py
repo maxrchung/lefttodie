@@ -5,6 +5,7 @@ import sys
 from soundmanager import soundmanager
 import math
 from ScreenShaker import *
+import Tiles
 
 class Screen:
     def __init__(self):
@@ -41,6 +42,11 @@ class Screen:
         self.l_screen_time = 0
 
         self.jumped = False
+        self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
+        self.TALevel1.make_tiles()
+        self.TALevel.make_inverse()
+        self.level1Tiles = self.TALevel1.tiles
+        self.level1Inverse = self.TALevel1.inverse
 
     def update(self):
         self.leftPressed = False
