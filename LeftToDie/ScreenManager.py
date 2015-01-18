@@ -42,15 +42,23 @@ class Screen:
         self.l_screen_time = 0
 
         self.jumped = False
+        #Load level 1
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
         self.TALevel1.make_inverse()
+
+        #create level lists
         self.levels = [self.TALevel1]
         self.tiles = [self.TALevel1.tiles]
         self.tilesInverse = [self.TALevel1.inverted_tiles]
         self.currentLevel = 0
         self.currentTiles = self.tiles[self.currentLevel]
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
+
+        #load level 2
+        
+
+        
 
     def update(self):
         self.leftPressed = False
