@@ -2,14 +2,19 @@ import pygame
 from Animation import Animate, AllSprites
 import random
 import sys
+from soundmanager import soundmanager
 
 class Screen:
+
+    velocity = [.03, 0]
+
     def __init__(self):
         self.go = True
         self.state = "LIFESCREEN"
         self.left = False
         self.screenw = 1024
         self.screenh = 768
+        self.sound = soundmanager()
         self.screen = pygame.display.set_mode((self.screenw, self.screenh))
         pygame.font.init()
         self.fontpath = pygame.font.match_font('lucidasans')
@@ -22,6 +27,7 @@ class Screen:
         
         self.backobjects = BackObjects()
         self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 5, 32, 32)
+
 
         self.current_level = 1
         self.lives = 3
@@ -54,6 +60,31 @@ class Screen:
             pass
 
     def draw(self):
+
+        keys = pygame.key.get_pressed()
+
+        if self.velocity[0] > .06:
+            self.velocity[0] -= .01
+
+        if keys[pygame.K_RIGHT]:
+            self.startplayer.pos[0] += self.startplayer.pos[0] * self.velocity[0]
+            self.velocity[0] += .01
+        elif keys[pygame.K_LEFT]:
+            self.startplayer.pos[0] += self.startplayer.pos[0] * -self.velocity[0]
+            self.velocity[0] += .01
+        else:
+            self.velocity[0] = .03
+
+        if self.startplayer.pos[1] < 600:
+            self.startplayer.pos[1] += 50
+        elif keys[pygame.K_UP]:
+            self.startplayer.pos[1] -= 100
+            self.sound.playsound("jump")
+
+
+
+
+
         if self.state == "LIFESCREEN":
             background_colour = (0, 0, 0)
             self.screen.fill(background_colour)
@@ -63,6 +94,7 @@ class Screen:
                                               
         elif self.state == "GAMESCREEN":             
             if self.left:
+                self.sound.playsound("inverse")
                 self.sun = AllSprites["sunInverse.png"]
                 self.background = AllSprites["backgroundInverse.png"]
                 for i in range(0, len(self.cloudlist)):
@@ -79,6 +111,7 @@ class Screen:
                 self.bsky2 = AllSprites["skyBackInverse.png"]
 
             else:
+                self.sound.playsound("syobon")
                 self.sun = AllSprites["sunNormal.png"]
                 self.background = AllSprites["backgroundNormal.png"]
                 for i in range(0, len(self.cloudlist)):
@@ -115,7 +148,10 @@ class Screen:
 
         elif self.state == "ENDSCREEN":
             pass            
- 
+
+        self.startplayer.Aupdate()
+        self.startplayer.draw(self.screen, self.startplayer.pos[0], self.startplayer.pos[1])
+
         
         pygame.display.update()
 
