@@ -43,11 +43,13 @@ class EndTile:
         self.is_inverted = is_inverted
         self.name = "end"
         if self.is_inverted:
-            self.image = AllSprites["tileEndInverse.png"]
+            self.anim = Animate(AllSprites['tileEndInverse.png'], 4, 4, 128, 32, 32)
         else:
-            self.image = AllSprites["tileEndNormal.png"]
+            self.anim = Animate(AllSprites['tileEndNormal.png'], 4, 4, 128, 32, 32)
+
     def draw(self):
-         self.screen.blit(self.image,(self.x*32,self.y*32))
+        self.anim.Aupdate()
+        self.anim.draw(self.screen, self.x*32, self.y*32)
 
 class EmptyTile:
     def __init__(self,x,y):
