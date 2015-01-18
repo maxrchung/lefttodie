@@ -44,9 +44,9 @@ class Screen:
         self.jumped = False
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
-        self.TALevel.make_inverse()
+        self.TALevel1.make_inverse()
         self.level1Tiles = self.TALevel1.tiles
-        self.level1Inverse = self.TALevel1.inverse
+        self.level1Inverse = self.TALevel1.inverted_tiles
 
     def update(self):
         self.leftPressed = False

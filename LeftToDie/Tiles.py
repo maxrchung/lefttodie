@@ -63,7 +63,7 @@ class EmptyTile:
 class TilesArray:
     def __init__(self, screen, mapfile):
         self.screen = screen
-        self.mapfile = map.open(mapfile, 'w')
+        self.mapfile = open(mapfile, 'r')
         self.tiles = []
         self.inverted_tiles = []
 
@@ -84,9 +84,8 @@ class TilesArray:
                     self.tiles.append(EndTile(x, y, self.screen, False)) #victory/end tile
                 x+=1
             y+=1
-
-
-     def make_inverse(self):
+            
+    def make_inverse(self):
         x = 0
         y = 0
         for row in self.mapfile:
@@ -101,6 +100,6 @@ class TilesArray:
                     self.inverted_tiles.append(EmptyTile(x, y)) #empty tile
                 elif char == "V":
                     self.inverted_tiles.append(EndTile(x, y, self.screen, True)) #victory/end tile
-                x+=1
+                    x+=1
             y+=1
 
