@@ -115,7 +115,7 @@ class Screen:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                 self.playerpos = self.levels[self.currentLevel].startpos
-                self.playerpos = [250, 250]
+##                self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
             if self.left:
