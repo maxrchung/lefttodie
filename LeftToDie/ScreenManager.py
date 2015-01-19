@@ -45,14 +45,10 @@ class Screen:
         self.TALevel1 = Tiles.TilesArray(self.screen,'level1.txt')
         self.TALevel1.make_tiles()
         self.TALevel1.make_inverse()
-        
         self.levels = [self.TALevel1]
         self.tiles = [self.TALevel1.tiles]
         self.tilesInverse = [self.TALevel1.inverted_tiles]
         self.currentLevel = 0
-        self.currentTiles = self.tiles[self.currentLevel]
-        self.currentTilesInverse = self.tilesInverse[self.currentLevel]
-        print(self.currentTilesInverse)
 
         self.TALevel2 = Tiles.TilesArray(self.screen, 'level2.txt')
         self.TALevel2.make_tiles()
@@ -72,6 +68,8 @@ class Screen:
         self.tiles.append(self.TALevel3.tiles)
         self.tilesInverse.append(self.TALevel3.inverted_tiles)
 
+        #load level 4
+        
         self.TALevel4 = Tiles.TilesArray(self.screen, 'level4.txt')
         self.TALevel4.make_tiles()
         self.TALevel4.make_inverse()
@@ -79,6 +77,7 @@ class Screen:
         self.levels.append(self.TALevel4)
         self.tiles.append(self.TALevel4.tiles)
         self.tilesInverse.append(self.TALevel4.inverted_tiles)  
+        
 
     def update(self):
         self.leftPressed = False
@@ -106,7 +105,9 @@ class Screen:
                     sys.exit()
 
         keys = pygame.key.get_pressed()
-            
+
+        self.currentTiles = self.tiles[self.currentLevel]
+        self.currentTilesInverse = self.tilesInverse[self.currentLevel]
         if self.state == "LIFESCREEN":
             self.startplayer.Aupdate()
             self.l_screen_time += self.l_screen_clock.tick()
@@ -114,6 +115,7 @@ class Screen:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                 self.playerpos = self.levels[self.currentLevel].startpos
+                self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
             if self.left:
@@ -161,6 +163,10 @@ class Screen:
             elif keys[pygame.K_DOWN]:
                 self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                 self.state = "VICTORYLEAP"
+            elif keys[pygame.K_p]:
+                self.velocity[1] = -25
+                self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                self.state = "DEATHDROP"
 
             if abs(self.velocity[0]) > 10.0:
                 if self.velocity[0] > 0:
@@ -177,6 +183,9 @@ class Screen:
                 self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
             else:
                 self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
+
+            if self.velocity[1] > 0:
+                self.jumped = True
 
             if abs(self.velocity[0]) > 0.1:
                 self.velocity[0] *= 0.6
@@ -198,6 +207,7 @@ class Screen:
         elif self.state == "VICTORYLEAP":
             if self.playerpos[1] < -64:
                 self.currentLevel += 1
+                print(self.currentLevel)
                 self.state = "LIFESCREEN"
                 self.velocity[1] = 0
                 self.l_screen_clock.tick()
@@ -235,7 +245,39 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "DEATHDROP":
-            pass
+
+            if self.playerpos[1] > 1076:
+                self.velocity[1] = 0
+                self.state = "LIFESCREEN"
+                self.l_screen_clock.tick()
+
+            if abs(self.velocity[0]) > 10.0:
+                if self.velocity[0] > 0:
+                    self.velocity[0] = 10.0
+                elif self.velocity[0] < 0:
+                    self.velocity[0] = -10.0
+
+            self.previouspos = self.playerpos
+
+            self.playerpos[0] += self.velocity[0]
+            self.playerpos[1] += self.velocity[1]
+
+            if abs(self.velocity[0]) > 0.1:
+                self.velocity[0] *= 0.6
+            else:
+                self.velocity[0] = 0
+
+            self.velocity[1] += 3.2
+            if self.velocity[1] > 15.0:
+                self.velocity[1] = 15.0
+            if self.playerpos[0]+8 < 0:
+                self.playerpos[0] = -8
+            elif self.playerpos[0] + 24 > 1024:
+                self.playerpos[0] = 1024 - 24
+
+            self.mainplayer.Aupdate()
+            self.clouds.cloudupdate(self.left)
+            self.backobjects.backupdate(self.left)
 
         elif self.state == "ENDSCREEN":
             pass
@@ -257,28 +299,21 @@ class Screen:
                     # VICTORY LEAP STATE EXECUTE
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
-                elif tile.name == "block":
-##                    print("COLLISION DETECTED!")
-                    # Reposition the player
+                elif tile.name == "block":                    # Reposition the player
                     # Finds center points of the boundingRects
                     playerPos = [previouspos[0] + 16, previouspos[1] + 16]
                     tilePos = [tile.x*32 + 16, tile.y*32 + 16]
 
                     # Finds diff vector between player and tile
-                    diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])
-##                    print('diff',diff)
-                
+                    diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])                
                     # If x is larger than the y, then we know that it is a horizontal collision
                     if abs(diff[0]) >= abs(diff[1]):
                         # If x is positive, then we reset player on the right of the tile
                         if  diff[0] > 0:
                             playerRect.left = tileRect.right
-##                            print('X detected')
                         # Else if negative, we set the player left of the tile
                         else:
                             playerRect.right = tileRect.left
-##                            print('X opposite')
-
                     # If y is larger than x, then there is a vertical collision
                     elif abs(diff[1]) >= abs(diff[0]):
                         # If y is negative, then reset player on the top of the tile
@@ -425,7 +460,61 @@ class Screen:
 
 
         elif self.state == "DEATHDROP":
-            pass
+            if self.left:
+                self.sun = AllSprites["sunInverse.png"]
+                self.background = AllSprites["backgroundInverse.png"]
+                for i in range(0, len(self.cloudlist)):
+                    if "Inverse" not in self.cloudlist[i][3]:
+                        self.cloudlist[i][3] = self.cloudsinverted[int(self.cloudlist[i][3][5]) - 1]
+                self.bhill = AllSprites["groundBackInverse.png"]
+                self.fhill = AllSprites["groundFrontInverse.png"]
+                self.fsky = AllSprites["skyFrontInverse.png"]
+                self.bsky = AllSprites["skyBackInverse.png"]
+
+                self.bhill2 = AllSprites["groundBackInverse.png"]
+                self.fhill2 = AllSprites["groundFrontInverse.png"]
+                self.fsky2 = AllSprites["skyFrontInverse.png"]
+                self.bsky2 = AllSprites["skyBackInverse.png"]
+
+            else:
+                self.sun = AllSprites["sunNormal.png"]
+                self.background = AllSprites["backgroundNormal.png"]
+                for i in range(0, len(self.cloudlist)):
+                    if "Normal" not in self.cloudlist[i][3]:
+                        self.cloudlist[i][3] = self.cloudsnormal[int(self.cloudlist[i][3][5]) - 1]
+
+                self.bhill = AllSprites["groundBackNormal.png"]
+                self.fhill = AllSprites["groundFrontNormal.png"]
+                self.fsky = AllSprites["skyFrontNormal.png"]
+                self.bsky = AllSprites["skyBackNormal.png"]
+
+                self.bhill2 = AllSprites["groundBackNormal.png"]
+                self.fhill2 = AllSprites["groundFrontNormal.png"]
+                self.fsky2 = AllSprites["skyFrontNormal.png"]
+                self.bsky2 = AllSprites["skyBackNormal.png"]
+
+                self.background = AllSprites["backgroundNormal.png"]
+
+            self.screen.blit(self.background, (0, 0))
+            self.screen.blit(self.sun, (0, 0))
+
+            self.screen.blit(self.bsky, (self.backobjects.bskyx,0))
+            self.screen.blit(self.bsky2, (self.backobjects.bskyx2,0))
+            self.screen.blit(self.bhill, (self.backobjects.bhillx, 534))
+            self.screen.blit(self.bhill2, (self.backobjects.bhillx2, 534))
+
+            self.screen.blit(self.fhill, (self.backobjects.fhillx, 593))
+            self.screen.blit(self.fhill2, (self.backobjects.fhillx2, 593))
+            self.screen.blit(self.fsky, (self.backobjects.fskyx,0))
+            self.screen.blit(self.fsky2, (self.backobjects.fskyx2,0))
+
+            for i in range(0, len(self.cloudlist)):
+                self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
+
+            for tile in self.currentTiles:
+                tile.draw()
+
+            self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
 
         elif self.state == "ENDSCREEN":
             pass
