@@ -20,6 +20,8 @@ class Screen:
         self.screen = self.shakeScreen.copy()
         self.screenShaker = ScreenShaker()
 
+        self.dead = False
+
         pygame.display.set_caption("Left to Die")
         pygame.font.init()
         self.fontpath = pygame.font.match_font('comicsansms')
@@ -84,31 +86,35 @@ class Screen:
         self.rightPressed = False
         self.upPressed = False
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.leftPressed = True
-                    self.left = True
-
-                elif event.key == pygame.K_RIGHT:
-                    self.rightPressed = True
-                    self.left = False
-
-                elif event.key == pygame.K_UP:
-                    self.upPressed = True
-
-                elif event.key == pygame.K_ESCAPE:
+        if not self.dead:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        self.leftPressed = True
+                        self.left = True
+
+                    elif event.key == pygame.K_RIGHT:
+                        self.rightPressed = True
+                        self.left = False
+
+                    elif event.key == pygame.K_UP:
+                        self.upPressed = True
+
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
 
         keys = pygame.key.get_pressed()
 
         self.currentTiles = self.tiles[self.currentLevel]
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
+        
         if self.state == "LIFESCREEN":
+            self.sound.playsound("syobon")
+            self.dead = False
             self.startplayer.Aupdate()
             self.l_screen_time += self.l_screen_clock.tick()
             if self.l_screen_time >= 3000:
@@ -245,7 +251,7 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "DEATHDROP":
-
+            self.dead = True
             if self.playerpos[1] > 1076:
                 self.velocity[1] = 0
                 self.state = "LIFESCREEN"
@@ -295,6 +301,7 @@ class Screen:
                     # DEATH DROP STATE EXECUTE
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
+                    self.left = False
                 elif tile.name == "end":
                     # VICTORY LEAP STATE EXECUTE
                     self.sound.playsound("victory")
