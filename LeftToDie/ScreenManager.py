@@ -35,8 +35,8 @@ class Screen:
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
         self.lock = True
         self.backobjects = BackObjects()
-        self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 128, 32, 32)
-        self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
+        self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 30, 32, 32)
+        self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 30, 32, 32)
 
         self.current_level = 1
         self.lives = 3
@@ -78,7 +78,16 @@ class Screen:
 
         self.levels.append(self.TALevel4)
         self.tiles.append(self.TALevel4.tiles)
-        self.tilesInverse.append(self.TALevel4.inverted_tiles)  
+        self.tilesInverse.append(self.TALevel4.inverted_tiles)
+
+        #load level 5
+        self.TALevel5 = Tiles.TilesArray(self.screen, 'level5.txt')
+        self.TALevel5.make_tiles()
+        self.TALevel5.make_inverse()
+
+        self.levels.append(self.TALevel5)
+        self.tiles.append(self.TALevel5.tiles)
+        self.tilesInverse.append(self.TALevel5.inverted_tiles) 
         
 
     def update(self):
