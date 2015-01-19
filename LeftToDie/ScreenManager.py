@@ -113,7 +113,9 @@ class Screen:
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
         
         if self.state == "LIFESCREEN":
+            self.velocity = [0.3, 0]
             self.sound.playsound("syobon")
+            self.left = False
             self.dead = False
             self.startplayer.Aupdate()
             self.l_screen_time += self.l_screen_clock.tick()
@@ -297,11 +299,11 @@ class Screen:
                     # DEATH DROP STATE EXECUTE
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
-                    self.left = False
                     self.screenShaker.shake(10, 800)
                     self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                     self.lives -= 1
                     self.state = "DEATHDROP"
+                    self.dead = True
                     self.velocity[1] = -30
                 elif tile.name == "end":
                     # VICTORY LEAP STATE EXECUTE
