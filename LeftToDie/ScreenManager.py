@@ -20,6 +20,8 @@ class Screen:
         self.screen = self.shakeScreen.copy()
         self.screenShaker = ScreenShaker()
 
+        self.dead = False
+
         pygame.display.set_caption("Left to Die")
         pygame.font.init()
         self.fontpath = pygame.font.match_font('comicsansms')
@@ -84,38 +86,42 @@ class Screen:
         self.rightPressed = False
         self.upPressed = False
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.leftPressed = True
-                    self.left = True
-
-                elif event.key == pygame.K_RIGHT:
-                    self.rightPressed = True
-                    self.left = False
-
-                elif event.key == pygame.K_UP:
-                    self.upPressed = True
-
-                elif event.key == pygame.K_ESCAPE:
+        if not self.dead:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        self.leftPressed = True
+                        self.left = True
+
+                    elif event.key == pygame.K_RIGHT:
+                        self.rightPressed = True
+                        self.left = False
+
+                    elif event.key == pygame.K_UP:
+                        self.upPressed = True
+
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
 
         keys = pygame.key.get_pressed()
 
         self.currentTiles = self.tiles[self.currentLevel]
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
+        
         if self.state == "LIFESCREEN":
+            self.sound.playsound("syobon")
+            self.dead = False
             self.startplayer.Aupdate()
             self.l_screen_time += self.l_screen_clock.tick()
             if self.l_screen_time >= 3000:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                 self.playerpos = self.levels[self.currentLevel].startpos
-##                self.playerpos = [250, 250]
+                #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
             if self.left:
@@ -225,8 +231,6 @@ class Screen:
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
 
-            self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
-
             if abs(self.velocity[0]) > 0.1:
                 self.velocity[0] *= 0.6
             else:
@@ -245,7 +249,7 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "DEATHDROP":
-
+            self.dead = True
             if self.playerpos[1] > 1076:
                 self.velocity[1] = 0
                 self.state = "LIFESCREEN"
@@ -267,9 +271,7 @@ class Screen:
             else:
                 self.velocity[0] = 0
 
-            self.velocity[1] += 3.2
-            if self.velocity[1] > 15.0:
-                self.velocity[1] = 15.0
+            self.velocity[1] += 5
             if self.playerpos[0]+8 < 0:
                 self.playerpos[0] = -8
             elif self.playerpos[0] + 24 > 1024:
@@ -295,8 +297,16 @@ class Screen:
                     # DEATH DROP STATE EXECUTE
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
+                    self.left = False
+                    self.screenShaker.shake(10, 800)
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    self.lives -= 1
+                    self.state = "DEATHDROP"
+                    self.velocity[1] = -30
                 elif tile.name == "end":
                     # VICTORY LEAP STATE EXECUTE
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    self.state = "VICTORYLEAP"
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                 elif tile.name == "block":                    # Reposition the player
