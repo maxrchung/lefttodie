@@ -115,7 +115,7 @@ class Screen:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                 self.playerpos = self.levels[self.currentLevel].startpos
-##                self.playerpos = [250, 250]
+                #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
             if self.left:
@@ -224,8 +224,6 @@ class Screen:
 
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
-
-            self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
 
             if abs(self.velocity[0]) > 0.1:
                 self.velocity[0] *= 0.6
