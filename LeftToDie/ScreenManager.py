@@ -219,6 +219,7 @@ class Screen:
             if self.playerpos[1] > 1076:
                 self.velocity[1] = 0
                 self.state = "LIFESCREEN"
+                self.l_screen_clock.tick()
 
             if abs(self.velocity[0]) > 10.0:
                 if self.velocity[0] > 0:
