@@ -107,6 +107,15 @@ class Screen:
         self.tiles.append(self.TALevel7.tiles)
         self.tilesInverse.append(self.TALevel7.inverted_tiles)
 
+        #load level 8
+        self.TALevel8 = Tiles.TilesArray(self.screen, 'level8.txt')
+        self.TALevel8.make_tiles()
+        self.TALevel8.make_inverse()
+
+        self.levels.append(self.TALevel8)
+        self.tiles.append(self.TALevel8.tiles)
+        self.tilesInverse.append(self.TALevel8.inverted_tiles)
+
 
         
 
