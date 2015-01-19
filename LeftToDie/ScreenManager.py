@@ -144,6 +144,11 @@ class Screen:
                 #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
+
+            if self.playerpos[1] >= 1024:
+                self.lives -= 1
+                self.state = "DEATHDROP"
+
             if self.left:
                 self.screenShaker.shake(1, 9999)
 
@@ -320,7 +325,10 @@ class Screen:
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
                     self.screenShaker.shake(10, 800)
-                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    if self.left:
+                        self.mainplayer = Animate(AllSprites['playerJumpInverse.png'], 1, 1, 1000, 32, 32)
+                    else:
+                        self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                     self.lives -= 1
                     self.state = "DEATHDROP"
                     self.dead = True
