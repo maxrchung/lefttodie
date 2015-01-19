@@ -135,6 +135,11 @@ class Screen:
                 #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
+
+            if self.playerpos[1] >= 1024:
+                self.lives -= 1
+                self.state = "DEATHDROP"
+
             if self.left:
                 self.screenShaker.shake(1, 9999)
 
