@@ -214,8 +214,10 @@ class Screen:
 
         elif self.state == "VICTORYLEAP":
             if self.playerpos[1] < -64:
-                self.currentLevel += 1
-                print(self.currentLevel)
+                if self.currentLevel +1 >= len(self.levels):
+                    self.currentLevel = 0
+                else:
+                    self.currentLevel += 1
                 self.state = "LIFESCREEN"
                 self.velocity[1] = 0
                 self.l_screen_clock.tick()
@@ -523,8 +525,12 @@ class Screen:
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
 
-            for tile in self.currentTiles:
-                tile.draw()
+            if self.left:
+                for tile in self.currentTilesInverse:
+                    tile.draw()
+            else:
+                for tile in self.currentTiles:
+                    tile.draw()
 
             self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
 
