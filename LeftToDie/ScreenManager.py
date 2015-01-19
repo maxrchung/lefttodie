@@ -151,7 +151,13 @@ class Screen:
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
 
-            self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
+            if self.left:
+                self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
+            else:
+                self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
+
+            if self.velocity[1] > 0:
+                self.jumped = True
 
             if abs(self.velocity[0]) > 0.1:
                 self.velocity[0] *= 0.6
@@ -188,8 +194,6 @@ class Screen:
 
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
-
-            self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
 
             if abs(self.velocity[0]) > 0.1:
                 self.velocity[0] *= 0.6
@@ -363,8 +367,12 @@ class Screen:
             for i in range(0, len(self.cloudlist)):
                 self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
         
-            for tile in self.currentTiles:
-                tile.draw()
+            if self.left:
+                for tile in self.currentTilesInverse:
+                    tile.draw()
+            else:
+                for tile in self.currentTiles:
+                    tile.draw()
 
             self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
 
