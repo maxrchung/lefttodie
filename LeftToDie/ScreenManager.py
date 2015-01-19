@@ -80,6 +80,13 @@ class Screen:
         self.tilesInverse.append(self.TALevel4.inverted_tiles)
 
         #load level 5
+        self.TALevel5 = Tiles.TilesArray(self.screen, 'level5.txt')
+        self.TALevel5.make_tiles()
+        self.TALevel5.make_inverse()
+
+        self.levels.append(self.TALevel5)
+        self.tiles.append(self.TALevel5.tiles)
+        self.tilesInverse.append(self.TALevel5.inverted_tiles) 
         
         self.TALevel5 = Tiles.TilesArray(self.screen, 'level5.txt')
         self.TALevel5.make_tiles()
@@ -102,12 +109,11 @@ class Screen:
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                            self.leftPressed = True
-                            self.left = True
+                        self.left = True
 
                     elif event.key == pygame.K_RIGHT:
-                            self.rightPressed = True
-                            self.left = False
+                        self.left = False
+
 
                     elif event.key == pygame.K_UP:
                         self.upPressed = True
@@ -135,6 +141,11 @@ class Screen:
                 #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
+
+            if self.playerpos[1] >= 1024:
+                self.lives -= 1
+                self.state = "DEATHDROP"
+
             if self.left:
                 self.screenShaker.shake(1, 9999)
 
@@ -185,8 +196,6 @@ class Screen:
                 self.velocity[1] = -25
                 self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                 self.state = "DEATHDROP"
-            elif keys[pygame.K_LEFT] and keys[pygame.K_DOWN]:
-                pass
             
             if abs(self.velocity[0]) > 10.0:
                 if self.velocity[0] > 0:
