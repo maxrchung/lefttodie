@@ -267,9 +267,7 @@ class Screen:
             else:
                 self.velocity[0] = 0
 
-            self.velocity[1] += 3.2
-            if self.velocity[1] > 15.0:
-                self.velocity[1] = 15.0
+            self.velocity[1] += 5
             if self.playerpos[0]+8 < 0:
                 self.playerpos[0] = -8
             elif self.playerpos[0] + 24 > 1024:
@@ -295,8 +293,15 @@ class Screen:
                     # DEATH DROP STATE EXECUTE
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
+                    self.screenShaker.shake(10, 800)
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    self.lives -= 1
+                    self.state = "DEATHDROP"
+                    self.velocity[1] = -30
                 elif tile.name == "end":
                     # VICTORY LEAP STATE EXECUTE
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    self.state = "VICTORYLEAP"
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                 elif tile.name == "block":                    # Reposition the player
