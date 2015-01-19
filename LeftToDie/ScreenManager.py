@@ -52,6 +52,35 @@ class Screen:
         self.currentTiles = self.tiles[self.currentLevel]
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
 
+        self.TALevel2 = Tiles.TilesArray(self.screen, 'level2.txt')
+        self.TALevel2.make_tiles()
+        self.TALevel2.make_inverse()
+
+        self.levels.append(self.TALevel2)
+        self.tiles.append(self.TALevel2.tiles)
+        self.tilesInverse.append(self.TALevel2.inverted_tiles)
+
+        #load level 3
+
+        self.TALevel3 = Tiles.TilesArray(self.screen, 'level3.txt')
+        self.TALevel3.make_tiles()
+        self.TALevel3.make_inverse()
+
+        self.levels.append(self.TALevel3)
+        self.tiles.append(self.TALevel3.tiles)
+        self.tilesInverse.append(self.TALevel3.inverted_tiles)
+
+        #load level 4
+        
+        self.TALevel4 = Tiles.TilesArray(self.screen, 'level4.txt')
+        self.TALevel4.make_tiles()
+        self.TALevel4.make_inverse()
+
+        self.levels.append(self.TALevel4)
+        self.tiles.append(self.TALevel4.tiles)
+        self.tilesInverse.append(self.TALevel4.inverted_tiles)  
+        
+
     def update(self):
         self.leftPressed = False
         self.rightPressed = False
