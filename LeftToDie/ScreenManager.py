@@ -197,13 +197,6 @@ class Screen:
             # Left movement
             elif keys[pygame.K_LEFT]:
                 self.velocity[0] += -3.0
-            elif keys[pygame.K_DOWN]:
-                self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
-                self.state = "VICTORYLEAP"
-            elif keys[pygame.K_p]:
-                self.velocity[1] = -25
-                self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
-                self.state = "DEATHDROP"
 
             if abs(self.velocity[0]) > 10.0:
                 if self.velocity[0] > 0:
