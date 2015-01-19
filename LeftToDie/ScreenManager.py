@@ -49,8 +49,6 @@ class Screen:
         self.tiles = [self.TALevel1.tiles]
         self.tilesInverse = [self.TALevel1.inverted_tiles]
         self.currentLevel = 0
-        self.currentTiles = self.tiles[self.currentLevel]
-        self.currentTilesInverse = self.tilesInverse[self.currentLevel]
 
         self.TALevel2 = Tiles.TilesArray(self.screen, 'level2.txt')
         self.TALevel2.make_tiles()
@@ -107,7 +105,9 @@ class Screen:
                     sys.exit()
 
         keys = pygame.key.get_pressed()
-            
+
+        self.currentTiles = self.tiles[self.currentLevel]
+        self.currentTilesInverse = self.tilesInverse[self.currentLevel]
         if self.state == "LIFESCREEN":
             self.startplayer.Aupdate()
             self.l_screen_time += self.l_screen_clock.tick()
@@ -207,6 +207,7 @@ class Screen:
         elif self.state == "VICTORYLEAP":
             if self.playerpos[1] < -64:
                 self.currentLevel += 1
+                print(self.currentLevel)
                 self.state = "LIFESCREEN"
                 self.velocity[1] = 0
                 self.l_screen_clock.tick()
