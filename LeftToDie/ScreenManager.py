@@ -193,10 +193,12 @@ class Screen:
             # Right movement
             if keys[pygame.K_RIGHT]:
                 self.velocity[0] += 3.0
+                self.left = False
             
             # Left movement
             if keys[pygame.K_LEFT]:
                 self.velocity[0] += -3.0
+                self.left = True
 
             if abs(self.velocity[0]) > 10.0:
                 if self.velocity[0] > 0:
