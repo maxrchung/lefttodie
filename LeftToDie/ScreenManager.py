@@ -89,14 +89,25 @@ class Screen:
         self.tiles.append(self.TALevel5.tiles)
         self.tilesInverse.append(self.TALevel5.inverted_tiles)
 
-         #load level 5
+        #load level 6
         self.TALevel6 = Tiles.TilesArray(self.screen, 'level6.txt')
         self.TALevel6.make_tiles()
         self.TALevel6.make_inverse()
 
         self.levels.append(self.TALevel6)
         self.tiles.append(self.TALevel6.tiles)
-        self.tilesInverse.append(self.TALevel6.inverted_tiles) 
+        self.tilesInverse.append(self.TALevel6.inverted_tiles)
+
+        #load level 7
+        self.TALevel7 = Tiles.TilesArray(self.screen, 'level7.txt')
+        self.TALevel7.make_tiles()
+        self.TALevel7.make_inverse()
+
+        self.levels.append(self.TALevel7)
+        self.tiles.append(self.TALevel7.tiles)
+        self.tilesInverse.append(self.TALevel7.inverted_tiles)
+
+
         
 
     def update(self):
@@ -144,11 +155,6 @@ class Screen:
                 #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
-
-            if self.playerpos[1] >= 1024:
-                self.lives -= 1
-                self.state = "DEATHDROP"
-
             if self.left:
                 self.screenShaker.shake(1, 9999)
 
@@ -325,10 +331,7 @@ class Screen:
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
                     self.screenShaker.shake(10, 800)
-                    if self.left:
-                        self.mainplayer = Animate(AllSprites['playerJumpInverse.png'], 1, 1, 1000, 32, 32)
-                    else:
-                        self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                     self.lives -= 1
                     self.state = "DEATHDROP"
                     self.dead = True
