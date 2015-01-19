@@ -121,7 +121,7 @@ class Screen:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                 self.playerpos = self.levels[self.currentLevel].startpos
-##                self.playerpos = [250, 250]
+                #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
             if self.left:
@@ -231,8 +231,6 @@ class Screen:
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
 
-            self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
-
             if abs(self.velocity[0]) > 0.1:
                 self.velocity[0] *= 0.6
             else:
@@ -273,9 +271,7 @@ class Screen:
             else:
                 self.velocity[0] = 0
 
-            self.velocity[1] += 3.2
-            if self.velocity[1] > 15.0:
-                self.velocity[1] = 15.0
+            self.velocity[1] += 5
             if self.playerpos[0]+8 < 0:
                 self.playerpos[0] = -8
             elif self.playerpos[0] + 24 > 1024:
@@ -302,8 +298,15 @@ class Screen:
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
                     self.left = False
+                    self.screenShaker.shake(10, 800)
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    self.lives -= 1
+                    self.state = "DEATHDROP"
+                    self.velocity[1] = -30
                 elif tile.name == "end":
                     # VICTORY LEAP STATE EXECUTE
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    self.state = "VICTORYLEAP"
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                 elif tile.name == "block":                    # Reposition the player
