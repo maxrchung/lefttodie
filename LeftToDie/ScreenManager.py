@@ -35,8 +35,8 @@ class Screen:
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
         self.lock = True
         self.backobjects = BackObjects()
-        self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 30, 32, 32)
-        self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 30, 32, 32)
+        self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 128, 32, 32)
+        self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
 
         self.current_level = 1
         self.lives = 3
@@ -184,7 +184,7 @@ class Screen:
                 self.velocity[0] += 3.0
             
             # Left movement
-            elif keys[pygame.K_LEFT]:
+            if keys[pygame.K_LEFT]:
                 self.velocity[0] += -3.0
             elif keys[pygame.K_DOWN]:
                 self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
@@ -345,10 +345,12 @@ class Screen:
                     if abs(diff[0]) >= abs(diff[1]):
                         # If x is positive, then we reset player on the right of the tile
                         if  diff[0] > 0:
-                            playerRect.left = tileRect.right
+                            self.velocity[0] -= 6
+##                            playerRect.left = tileRect.right
                         # Else if negative, we set the player left of the tile
                         else:
-                            playerRect.right = tileRect.left
+                            self.velocity[0] -= 6
+##                            playerRect.right = tileRect.left
                     # If y is larger than x, then there is a vertical collision
                     elif abs(diff[1]) >= abs(diff[0]):
                         # If y is negative, then reset player on the top of the tile
@@ -359,6 +361,7 @@ class Screen:
                             playerRect.bottom = tileRect.top
                             self.jumped = False
                         else:
+##                            self.velocity[1] += 25
                             playerRect.top = tileRect.bottom
 
                     self.playerpos = [playerRect.x - 8, playerRect.y - 8]
