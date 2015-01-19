@@ -10,7 +10,7 @@ class BlockTile:
         self.name = "block"
         self.is_inverted = is_inverted
         if self.is_inverted:
-            self.image = AllSprites["tileBlockInverted.png"]
+            self.image = AllSprites["tileBlockInverse.png"]
         else:
             self.image = AllSprites["tileBlockNormal.png"]
 
@@ -26,7 +26,7 @@ class SpikeTile:
         self.is_inverted = is_inverted
         self.name = "spikes"
         if self.is_inverted:
-            self.image = AllSprites["tileSpikeInverted.png"]
+            self.image = AllSprites["tileSpikeInverse.png"]
         else:
             self.image = AllSprites["tileSpikeNormal.png"]
 
@@ -99,9 +99,9 @@ class TilesArray:
         for row in lines:
             for char in row:
                 if char == "B":
-                    self.inverted_tiles.append(SpikeTile(x, y, self.screen, False)) #normal block tile
+                    self.inverted_tiles.append(SpikeTile(x, y, self.screen, True)) #normal block tile
                 elif char == "S":
-                    self.inverted_tiles.append(BlockTile(x, y, self.screen, False)) #Spike tile
+                    self.inverted_tiles.append(BlockTile(x, y, self.screen, True)) #Spike tile
                 elif char == "X":
                     self.inverted_tiles.append(EmptyTile(x, y)) #empty tile
                 elif char == "V":
