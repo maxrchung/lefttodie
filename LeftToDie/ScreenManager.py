@@ -697,7 +697,7 @@ class Clouds:
             for i in range(len(self.clouds)):
                 self.clouds[i][0] += self.clouds[i][2]
                 if self.clouds[i][0] - 100 > 1020:
-                    self.clouds[i][0] = 0
+                    self.clouds[i][0] = -100
                     self.clouds[i][1] = random.randrange(117, 500)
                     self.clouds[i][3] = self.cloudimages[random.randint(0, len(self.cloudsinverted) - 1)]
         else:
