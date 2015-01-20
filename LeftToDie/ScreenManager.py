@@ -13,6 +13,7 @@ class Screen:
         self.go = True
         self.state = "LIFESCREEN"
         self.left = False
+
         self.screenw = 1024
         self.screenh = 768
         self.sound = soundmanager()
@@ -29,9 +30,7 @@ class Screen:
         self.playerpos = [64, 600]
 
         self.clouds = Clouds()
-        self.cloudlist = self.clouds.clouds
-        self.cloudsnormal = sorted(self.clouds.cloudimages)
-        self.cloudsinverted = sorted(self.clouds.cloudsinverted)
+
         self.lock = False
         self.backobjects = BackObjects()
         self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 128, 32, 32)
@@ -145,9 +144,10 @@ class Screen:
                         sys.exit()
 
         keys = pygame.key.get_pressed()
-
         self.currentTiles = self.tiles[self.currentLevel]
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
+
+        self.clouds.cloudupdate(self.left)
         
         if self.state == "LIFESCREEN":
             self.velocity = [0.3, 0]
@@ -245,7 +245,6 @@ class Screen:
                 self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
 
             self.mainplayer.Aupdate()
-            self.clouds.cloudupdate(self.left)
             self.backobjects.backupdate(self.left)
 
         elif self.state == "VICTORYLEAP":
@@ -286,7 +285,6 @@ class Screen:
                 self.playerpos[0] = 1024 - 24
 
             self.mainplayer.Aupdate()
-            self.clouds.cloudupdate(self.left)
             self.backobjects.backupdate(self.left)
 
         elif self.state == "DEATHDROP":
@@ -319,7 +317,6 @@ class Screen:
                 self.playerpos[0] = 1024 - 24
 
             self.mainplayer.Aupdate()
-            self.clouds.cloudupdate(self.left)
             self.backobjects.backupdate(self.left)
 
         elif self.state == "ENDSCREEN":
@@ -399,9 +396,7 @@ class Screen:
             if self.left:
                 self.sun = AllSprites["sunInverse.png"]
                 self.background = AllSprites["backgroundInverse.png"]
-                for i in range(0, len(self.cloudlist)):
-                    if "Inverse" not in self.cloudlist[i][3]:
-                        self.cloudlist[i][3] = self.cloudsinverted[int(self.cloudlist[i][3][5]) - 1]
+
                 self.bhill = AllSprites["groundBackInverse.png"]
                 self.fhill = AllSprites["groundFrontInverse.png"]
                 self.fsky = AllSprites["skyFrontInverse.png"]
@@ -415,9 +410,6 @@ class Screen:
             else:
                 self.sun = AllSprites["sunNormal.png"]
                 self.background = AllSprites["backgroundNormal.png"]
-                for i in range(0, len(self.cloudlist)):
-                    if "Normal" not in self.cloudlist[i][3]:
-                        self.cloudlist[i][3] = self.cloudsnormal[int(self.cloudlist[i][3][5]) - 1]
 
                 self.bhill = AllSprites["groundBackNormal.png"]
                 self.fhill = AllSprites["groundFrontNormal.png"]
@@ -444,8 +436,8 @@ class Screen:
             self.screen.blit(self.fsky, (self.backobjects.fskyx,0))
             self.screen.blit(self.fsky2, (self.backobjects.fskyx2,0))
 
-            for i in range(0, len(self.cloudlist)):
-                self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
+            for i in range(0, len(self.clouds.clouds)):
+                self.screen.blit(AllSprites[self.clouds.clouds[i][3]], (self.clouds.clouds[i][0], self.clouds.clouds[i][1]))
         
             if self.left:
                 for tile in self.currentTilesInverse:
@@ -462,9 +454,7 @@ class Screen:
             if self.left:
                 self.sun = AllSprites["sunInverse.png"]
                 self.background = AllSprites["backgroundInverse.png"]
-                for i in range(0, len(self.cloudlist)):
-                    if "Inverse" not in self.cloudlist[i][3]:
-                        self.cloudlist[i][3] = self.cloudsinverted[int(self.cloudlist[i][3][5]) - 1]
+
                 self.bhill = AllSprites["groundBackInverse.png"]
                 self.fhill = AllSprites["groundFrontInverse.png"]
                 self.fsky = AllSprites["skyFrontInverse.png"]
@@ -478,9 +468,7 @@ class Screen:
             else:
                 self.sun = AllSprites["sunNormal.png"]
                 self.background = AllSprites["backgroundNormal.png"]
-                for i in range(0, len(self.cloudlist)):
-                    if "Normal" not in self.cloudlist[i][3]:
-                        self.cloudlist[i][3] = self.cloudsnormal[int(self.cloudlist[i][3][5]) - 1]
+
 
                 self.bhill = AllSprites["groundBackNormal.png"]
                 self.fhill = AllSprites["groundFrontNormal.png"]
@@ -507,8 +495,8 @@ class Screen:
             self.screen.blit(self.fsky, (self.backobjects.fskyx,0))
             self.screen.blit(self.fsky2, (self.backobjects.fskyx2,0))
 
-            for i in range(0, len(self.cloudlist)):
-                self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
+            for i in range(0, len(self.clouds.clouds)):
+                self.screen.blit(AllSprites[self.clouds.clouds[i][3]], (self.clouds.clouds[i][0], self.clouds.clouds[i][1]))
 
             for tile in self.currentTiles:
                 tile.draw()
@@ -520,9 +508,7 @@ class Screen:
             if self.left:
                 self.sun = AllSprites["sunInverse.png"]
                 self.background = AllSprites["backgroundInverse.png"]
-                for i in range(0, len(self.cloudlist)):
-                    if "Inverse" not in self.cloudlist[i][3]:
-                        self.cloudlist[i][3] = self.cloudsinverted[int(self.cloudlist[i][3][5]) - 1]
+
                 self.bhill = AllSprites["groundBackInverse.png"]
                 self.fhill = AllSprites["groundFrontInverse.png"]
                 self.fsky = AllSprites["skyFrontInverse.png"]
@@ -536,9 +522,6 @@ class Screen:
             else:
                 self.sun = AllSprites["sunNormal.png"]
                 self.background = AllSprites["backgroundNormal.png"]
-                for i in range(0, len(self.cloudlist)):
-                    if "Normal" not in self.cloudlist[i][3]:
-                        self.cloudlist[i][3] = self.cloudsnormal[int(self.cloudlist[i][3][5]) - 1]
 
                 self.bhill = AllSprites["groundBackNormal.png"]
                 self.fhill = AllSprites["groundFrontNormal.png"]
@@ -565,8 +548,8 @@ class Screen:
             self.screen.blit(self.fsky, (self.backobjects.fskyx,0))
             self.screen.blit(self.fsky2, (self.backobjects.fskyx2,0))
 
-            for i in range(0, len(self.cloudlist)):
-                self.screen.blit(AllSprites[self.cloudlist[i][3]], (self.cloudlist[i][0], self.cloudlist[i][1]))
+            for i in range(0, len(self.clouds.clouds)):
+                self.screen.blit(AllSprites[self.clouds.clouds[i][3]], (self.clouds.clouds[i][0], self.clouds.clouds[i][1]))
 
             if self.left:
                 for tile in self.currentTilesInverse:
@@ -591,12 +574,12 @@ class BackObjects:
         self.speedb = 2.5
         self.min = -self.width
         self.max = self.width
-        
+
         self.fskyx = 0
         self.bskyx = 0
         self.fhillx = 0
         self.bhillx = 0
-        
+
         self.fskyx2 = self.width
         self.bskyx2 = self.width
         self.fhillx2 = self.width
@@ -695,6 +678,9 @@ class Clouds:
             # Random normal cloud [3]
             self.clouds.append([random.randrange(100, 900),random.randrange(117, 500), random.randint(1,2), self.cloudimages[random.randint(0,len(self.cloudimages) - 1)]])
 
+        self.cloudimages.sort()
+        self.cloudsinverted.sort()
+            
     def cloudupdate(self, inverted):       
         if inverted:
             for i in range(len(self.clouds)):
@@ -703,6 +689,10 @@ class Clouds:
                     self.clouds[i][0] = -100
                     self.clouds[i][1] = random.randrange(117, 500)
                     self.clouds[i][3] = self.cloudimages[random.randint(0, len(self.cloudsinverted) - 1)]
+
+            for i in range(0, len(self.clouds)):
+                if "Inverse" not in self.clouds[i][3]:
+                    self.clouds[i][3] = self.cloudsinverted[int(self.clouds[i][3][5]) - 1]
         else:
             for i in range(len(self.clouds)):
                 self.clouds[i][0] -= self.clouds[i][2]
@@ -711,3 +701,6 @@ class Clouds:
                     self.clouds[i][1] = random.randrange(117, 500)
                     self.clouds[i][3] = self.cloudimages[random.randint(0, len(self.cloudimages) - 1)]
 
+            for i in range(0, len(self.clouds)):
+                if "Normal" not in self.clouds[i][3]:
+                    self.clouds[i][3] = self.cloudimages[int(self.clouds[i][3][5]) - 1]
