@@ -20,8 +20,6 @@ class Screen:
         self.screen = self.shakeScreen.copy()
         self.screenShaker = ScreenShaker()
 
-        self.dead = False
-
         pygame.display.set_caption("Left to Die")
         pygame.font.init()
         self.fontpath = pygame.font.match_font('comicsansms')
@@ -34,7 +32,7 @@ class Screen:
         self.cloudlist = self.clouds.clouds
         self.cloudsnormal = sorted(self.clouds.cloudimages)
         self.cloudsinverted = sorted(self.clouds.cloudsinverted)
-        self.lock = True
+        self.lock = False
         self.backobjects = BackObjects()
         self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 128, 32, 32)
         self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
@@ -125,7 +123,7 @@ class Screen:
         self.rightPressed = False
         self.upPressed = False
 
-        if not self.dead:
+        if not self.lock:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -155,7 +153,7 @@ class Screen:
             self.velocity = [0.3, 0]
             self.sound.playsound("syobon")
             self.left = False
-            self.dead = False
+            self.lock = False
             self.startplayer.Aupdate()
             self.l_screen_time += self.l_screen_clock.tick()
             if self.l_screen_time >= 3000:
@@ -251,6 +249,7 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "VICTORYLEAP":
+            self.lock = True
             if self.playerpos[1] < -64:
                 if self.currentLevel +1 >= len(self.levels):
                     self.currentLevel = 0
@@ -291,7 +290,7 @@ class Screen:
             self.backobjects.backupdate(self.left)
 
         elif self.state == "DEATHDROP":
-            self.dead = True
+            self.lock = True
             if self.playerpos[1] > 1076:
                 self.velocity[1] = 0
                 self.state = "LIFESCREEN"
@@ -343,16 +342,20 @@ class Screen:
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
                     self.screenShaker.shake(10, 800)
-                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    if not self.left:
+                        self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    else:
+                        self.mainplayer = Animate(AllSprites['playerJumpInverse.png'], 1, 1, 1000, 32, 32)
                     self.lives -= 1
                     self.state = "DEATHDROP"
-                    self.dead = True
+                    self.lock = True
                     self.velocity[1] = -25
                     return
                 elif tile.name == "end":
                     # VICTORY LEAP STATE EXECUTE
                     self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                     self.state = "VICTORYLEAP"
+                    self.lock = True
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                     return
