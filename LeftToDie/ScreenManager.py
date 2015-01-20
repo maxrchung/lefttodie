@@ -27,6 +27,7 @@ class Screen:
         self.fontpath = pygame.font.match_font('comicsansms')
         self.font = pygame.font.Font(self.fontpath, 28)
         self.velocity = [.03, 0]
+        self.previouspos = [0,0]
         self.playerpos = [64, 600]
 
         self.clouds = Clouds()
@@ -161,7 +162,6 @@ class Screen:
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
                 self.playerpos = self.levels[self.currentLevel].startpos
-                #self.playerpos = [250, 250]
 
         elif self.state == "GAMESCREEN":
             if self.playerpos[1] > 1024:
@@ -219,15 +219,10 @@ class Screen:
                 elif self.velocity[0] < 0:
                     self.velocity[0] = -10.0
 
-            self.previouspos = self.playerpos
+            self.previouspos = [self.playerpos[0], self.playerpos[1]]
 
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
-
-            if self.left:
-                self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
-            else:
-                self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
 
             if self.velocity[1] > 0:
                 self.jumped = True
@@ -245,6 +240,12 @@ class Screen:
                 self.playerpos[0] = -8
             elif self.playerpos[0] + 24 > 1024:
                 self.playerpos[0] = 1024 - 24
+
+            if self.left:
+                self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
+            else:
+                self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
+
             self.mainplayer.Aupdate()
             self.clouds.cloudupdate(self.left)
             self.backobjects.backupdate(self.left)
@@ -324,55 +325,53 @@ class Screen:
 
         elif self.state == "ENDSCREEN":
             pass
+
     def checkCollision(self, previouspos, playerpos, tiles):
         # Make our playerRect based on the given position
         playerRect = pygame.Rect(playerpos[0] + 8, playerpos[1] + 8, 16, 24)
+        collisions = []
+
         for tile in tiles:
             # Don't care if it's empty
             if tile.name == "empty":
                 continue
             tileRect = pygame.Rect(tile.x*32, tile.y*32, 32, 32)
-                
+
             if playerRect.colliderect(tileRect):
                 if tile.name == "spikes":
                     # DEATH DROP STATE EXECUTE
                     self.sound.playsound("death")
                     self.sound.playsound("levelDie")
                     self.screenShaker.shake(10, 800)
-                    if self.left:
-                        self.mainplayer = Animate(AllSprites['playerJumpInverse.png'], 1, 1, 1000, 32, 32)
-                    else:
-                        self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
-
+                    self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                     self.lives -= 1
                     self.state = "DEATHDROP"
                     self.dead = True
-                    self.velocity[1] = -30
+                    self.velocity[1] = -25
+                    return
                 elif tile.name == "end":
                     # VICTORY LEAP STATE EXECUTE
                     self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
                     self.state = "VICTORYLEAP"
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
-                elif tile.name == "block":                    # Reposition the player
-                    # Finds center points of the boundingRects
-                    playerPos = [previouspos[0] + 16, previouspos[1] + 16]
-                    tilePos = [tile.x*32 + 16, tile.y*32 + 16]
+                    return
+                elif tile.name == "block":
+                    playerPos = previouspos
+                    tilePos = [tile.x*32, tile.y*32]
+                    tileRect = pygame.Rect(tile.x*32, tile.y*32, 32, 32)
+                    diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])
 
-                    # Finds diff vector between player and tile
-                    diff = (playerPos[0]-tilePos[0], playerPos[1]-tilePos[1])                
                     # If x is larger than the y, then we know that it is a horizontal collision
-                    if abs(diff[0]) >= abs(diff[1]):
+                    if abs(diff[0]) > abs(diff[1]):
                         # If x is positive, then we reset player on the right of the tile
                         if  diff[0] > 0:
-                            self.velocity[0] -= 6
-##                            playerRect.left = tileRect.right
+                            playerRect.left = tileRect.right
                         # Else if negative, we set the player left of the tile
-                        else:
-                            self.velocity[0] -= 6
-##                            playerRect.right = tileRect.left
+                        elif diff[0] < 0:
+                            playerRect.right = tileRect.left
                     # If y is larger than x, then there is a vertical collision
-                    elif abs(diff[1]) >= abs(diff[0]):
+                    elif abs(diff[1]) > abs(diff[0]):
                         # If y is negative, then reset player on the top of the tile
                         # Note that this is opposite of x calclations because we have to keep
                         # in mind that y is reversed according to top left coordinates
@@ -380,13 +379,10 @@ class Screen:
                             self.velocity[1] = 0
                             playerRect.bottom = tileRect.top
                             self.jumped = False
-                        else:
-##                            self.velocity[1] += 25
+                        elif diff[1] > 0:
                             playerRect.top = tileRect.bottom
 
                     self.playerpos = [playerRect.x - 8, playerRect.y - 8]
-
-
 
     def draw(self):
         if self.state == "LIFESCREEN":
