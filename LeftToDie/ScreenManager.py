@@ -33,6 +33,9 @@ class Screen:
         self.clouds = Clouds()
 
         self.lock = False
+        self.dead = False
+        self.win = False
+        
         self.backobjects = BackObjects()
         self.startplayer= Animate(AllSprites['playerMoveNormal.png'], 2, 2, 128, 32, 32)
         self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
@@ -147,7 +150,6 @@ class Screen:
         keys = pygame.key.get_pressed()
         self.currentTiles = self.tiles[self.currentLevel]
         self.currentTilesInverse = self.tilesInverse[self.currentLevel]
-
         self.clouds.cloudupdate(self.left)
         
         if self.state == "LIFESCREEN":
@@ -156,6 +158,9 @@ class Screen:
             self.sound.playsound("syobon")
             self.left = False
             self.lock = False
+            self.dead = False
+            self.win = False
+
             self.startplayer.Aupdate()
             if self.left:
                 self.mainplayer= Animate(AllSprites['playerIdleInverse.png'], 2, 2, 500, 32, 32)
@@ -164,14 +169,16 @@ class Screen:
                 
             self.l_screen_time += self.l_screen_clock.tick()
             if self.l_screen_time >= 3000:
+                self.playerpos = self.levels[self.currentLevel].startpos
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
-                self.playerpos = self.levels[self.currentLevel].startpos
+
 
         elif self.state == "GAMESCREEN":
-            if self.playerpos[1] > 1024:
-                self.lives -= 1
-                self.state = "DEATHDROP"
+            if not self.dead:
+                if self.playerpos[1] > 1024:
+                    self.lives -= 1
+                    self.dead = True
             
             if self.left:
                 self.screenShaker.shake(1, 9999)
@@ -210,11 +217,13 @@ class Screen:
 
             # Right movement
             if keys[pygame.K_RIGHT]:
+                self.sound.playsound("syobon")
                 self.velocity[0] += 3.0
                 self.left = False
             
             # Left movement
             if keys[pygame.K_LEFT]:
+                self.sound.playsound("inverse")
                 self.velocity[0] += -3.0
                 self.left = True
 
@@ -245,16 +254,17 @@ class Screen:
                 self.playerpos[0] = -8
             elif self.playerpos[0] + 24 > 1024:
                 self.playerpos[0] = 1024 - 24
-
-            if self.left:
-                self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
-            else:
-                self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
+            if not self.dead:
+                if not self.win:
+                    if self.left:
+                        self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
+                    else:
+                        self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
 
             self.mainplayer.Aupdate()
             self.backobjects.backupdate(self.left)
 
-        elif self.state == "VICTORYLEAP":
+        if self.win:
             self.lock = True
             if self.playerpos[1] < -64:
                 if self.currentLevel +1 >= len(self.levels):
@@ -294,7 +304,7 @@ class Screen:
             self.mainplayer.Aupdate()
             self.backobjects.backupdate(self.left)
 
-        elif self.state == "DEATHDROP":
+        if self.dead:
             self.lock = True
             if self.playerpos[1] > 1076:
                 self.velocity[1] = 0
@@ -351,15 +361,14 @@ class Screen:
                     else:
                         self.mainplayer = Animate(AllSprites['playerJumpInverse.png'], 1, 1, 1000, 32, 32)
                     self.lives -= 1
-                    self.state = "DEATHDROP"
                     self.lock = True
+                    self.dead = True
                     self.velocity[1] = -25
                     return
                 elif tile.name == "end":
-                    # VICTORY LEAP STATE EXECUTE
                     self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
-                    self.state = "VICTORYLEAP"
                     self.lock = True
+                    self.win = True
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
                     if not self.left:
@@ -459,125 +468,6 @@ class Screen:
                     tile.draw()
 
             self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
-
-        elif self.state == "VICTORYLEAP":
-
-            if self.left:
-                self.sun = AllSprites["sunInverse.png"]
-                self.background = AllSprites["backgroundInverse.png"]
-
-                self.bhill = AllSprites["groundBackInverse.png"]
-                self.fhill = AllSprites["groundFrontInverse.png"]
-                self.fsky = AllSprites["skyFrontInverse.png"]
-                self.bsky = AllSprites["skyBackInverse.png"]
-
-                self.bhill2 = AllSprites["groundBackInverse.png"]
-                self.fhill2 = AllSprites["groundFrontInverse.png"]
-                self.fsky2 = AllSprites["skyFrontInverse.png"]
-                self.bsky2 = AllSprites["skyBackInverse.png"]
-
-            else:
-                self.sun = AllSprites["sunNormal.png"]
-                self.background = AllSprites["backgroundNormal.png"]
-
-
-                self.bhill = AllSprites["groundBackNormal.png"]
-                self.fhill = AllSprites["groundFrontNormal.png"]
-                self.fsky = AllSprites["skyFrontNormal.png"]
-                self.bsky = AllSprites["skyBackNormal.png"]
-
-                self.bhill2 = AllSprites["groundBackNormal.png"]
-                self.fhill2 = AllSprites["groundFrontNormal.png"]
-                self.fsky2 = AllSprites["skyFrontNormal.png"]
-                self.bsky2 = AllSprites["skyBackNormal.png"]
-
-                self.background = AllSprites["backgroundNormal.png"]
-
-            self.screen.blit(self.background, (0, 0))
-            self.screen.blit(self.sun, (0, 0))
-
-            self.screen.blit(self.bsky, (self.backobjects.bskyx,0))
-            self.screen.blit(self.bsky2, (self.backobjects.bskyx2,0))
-            self.screen.blit(self.bhill, (self.backobjects.bhillx, 534))
-            self.screen.blit(self.bhill2, (self.backobjects.bhillx2, 534))
-
-            self.screen.blit(self.fhill, (self.backobjects.fhillx, 593))
-            self.screen.blit(self.fhill2, (self.backobjects.fhillx2, 593))
-            self.screen.blit(self.fsky, (self.backobjects.fskyx,0))
-            self.screen.blit(self.fsky2, (self.backobjects.fskyx2,0))
-
-            for i in range(0, len(self.clouds.clouds)):
-                self.screen.blit(AllSprites[self.clouds.clouds[i][3]], (self.clouds.clouds[i][0], self.clouds.clouds[i][1]))
-
-            if self.left:
-                for tile in self.currentTilesInverse:
-                    tile.draw()
-
-            else:
-                for tile in self.currentTiles:
-                    tile.draw()
-
-            self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
-
-
-        elif self.state == "DEATHDROP":
-            if self.left:
-                self.sun = AllSprites["sunInverse.png"]
-                self.background = AllSprites["backgroundInverse.png"]
-
-                self.bhill = AllSprites["groundBackInverse.png"]
-                self.fhill = AllSprites["groundFrontInverse.png"]
-                self.fsky = AllSprites["skyFrontInverse.png"]
-                self.bsky = AllSprites["skyBackInverse.png"]
-
-                self.bhill2 = AllSprites["groundBackInverse.png"]
-                self.fhill2 = AllSprites["groundFrontInverse.png"]
-                self.fsky2 = AllSprites["skyFrontInverse.png"]
-                self.bsky2 = AllSprites["skyBackInverse.png"]
-
-            else:
-                self.sun = AllSprites["sunNormal.png"]
-                self.background = AllSprites["backgroundNormal.png"]
-
-                self.bhill = AllSprites["groundBackNormal.png"]
-                self.fhill = AllSprites["groundFrontNormal.png"]
-                self.fsky = AllSprites["skyFrontNormal.png"]
-                self.bsky = AllSprites["skyBackNormal.png"]
-
-                self.bhill2 = AllSprites["groundBackNormal.png"]
-                self.fhill2 = AllSprites["groundFrontNormal.png"]
-                self.fsky2 = AllSprites["skyFrontNormal.png"]
-                self.bsky2 = AllSprites["skyBackNormal.png"]
-
-                self.background = AllSprites["backgroundNormal.png"]
-
-            self.screen.blit(self.background, (0, 0))
-            self.screen.blit(self.sun, (0, 0))
-
-            self.screen.blit(self.bsky, (self.backobjects.bskyx,0))
-            self.screen.blit(self.bsky2, (self.backobjects.bskyx2,0))
-            self.screen.blit(self.bhill, (self.backobjects.bhillx, 534))
-            self.screen.blit(self.bhill2, (self.backobjects.bhillx2, 534))
-
-            self.screen.blit(self.fhill, (self.backobjects.fhillx, 593))
-            self.screen.blit(self.fhill2, (self.backobjects.fhillx2, 593))
-            self.screen.blit(self.fsky, (self.backobjects.fskyx,0))
-            self.screen.blit(self.fsky2, (self.backobjects.fskyx2,0))
-
-            for i in range(0, len(self.clouds.clouds)):
-                self.screen.blit(AllSprites[self.clouds.clouds[i][3]], (self.clouds.clouds[i][0], self.clouds.clouds[i][1]))
-
-            if self.left:
-                for tile in self.currentTilesInverse:
-                    tile.draw()
-            else:
-                for tile in self.currentTiles:
-                    tile.draw()
-
-            self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
-
-        elif self.state == "ENDSCREEN":
-            pass
         
         self.screenShaker.update()
         self.shakeScreen.blit(self.screen, self.screenShaker.getValue())
