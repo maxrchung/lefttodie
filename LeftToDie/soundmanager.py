@@ -20,6 +20,8 @@ class soundmanager():
         self.inverseSound = pygame.mixer.Sound("Sounds/inverse.wav")
         self.inverseSound.set_volume(0.5)
 
+        self.inversePlaying = False
+
     def playsound(self, soundname):
         if soundname == "jump":
             self.jumpSound.play()
@@ -32,9 +34,12 @@ class soundmanager():
         elif soundname == "levelUp":
             self.levelUpSound.play()
         elif soundname == "inverse":
-            self.inverseSound.play(-1)
-            pygame.mixer.music.pause()
+            if not self.inversePlaying:
+                self.inverseSound.play(-1)
+                pygame.mixer.music.pause()
+                self.inversePlaying = True
         elif soundname == "syobon":
+            self.inversePlaying = False
             self.inverseSound.stop()
             pygame.mixer.music.unpause()
         else:
