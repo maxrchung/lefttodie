@@ -167,14 +167,11 @@ class Screen:
             self.win = False
 
             self.startplayer.Aupdate()
-            if self.left:
-                self.mainplayer= Animate(AllSprites['playerIdleInverse.png'], 2, 2, 500, 32, 32)
-            else:
-                self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
+            self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
                 
             self.l_screen_time += self.l_screen_clock.tick()
             if self.l_screen_time >= 3000:
-                self.playerpos = self.levels[self.currentLevel].startpos
+                self.playerpos = [self.levels[self.currentLevel].startpos[0], self.levels[self.currentLevel].startpos[1]]
                 self.state = "GAMESCREEN"
                 self.l_screen_time = 0
 
@@ -219,24 +216,24 @@ class Screen:
                 self.sound.playsound("jump")
                 self.jumped = True
                 self.velocity[1] = -25.0
+            if not self.lock:
+                # Right movement
+                if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                    self.sound.playsound("syobon")
+                    self.velocity[0] += 3.0
+                    self.left = False
+                
+                # Left movement
+                if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                    self.sound.playsound("inverse")
+                    self.velocity[0] += -3.0
+                    self.left = True
 
-            # Right movement
-            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                self.sound.playsound("syobon")
-                self.velocity[0] += 3.0
-                self.left = False
-            
-            # Left movement
-            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                self.sound.playsound("inverse")
-                self.velocity[0] += -3.0
-                self.left = True
-
-            if abs(self.velocity[0]) > 10.0:
-                if self.velocity[0] > 0:
-                    self.velocity[0] = 10.0
-                elif self.velocity[0] < 0:
-                    self.velocity[0] = -10.0
+                if abs(self.velocity[0]) > 10.0:
+                    if self.velocity[0] > 0:
+                        self.velocity[0] = 10.0
+                    elif self.velocity[0] < 0:
+                        self.velocity[0] = -10.0
 
             self.previouspos = [self.playerpos[0], self.playerpos[1]]
 
@@ -259,12 +256,13 @@ class Screen:
                 self.playerpos[0] = -8
             elif self.playerpos[0] + 24 > 1024:
                 self.playerpos[0] = 1024 - 24
-            if not self.dead:
-                if not self.win:
-                    if self.left:
-                        self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
-                    else:
-                        self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
+            if not self.lock:
+                if not self.dead:
+                    if not self.win:
+                        if self.left:
+                            self.checkCollision(self.previouspos, self.playerpos, self.currentTilesInverse)
+                        else:
+                            self.checkCollision(self.previouspos, self.playerpos, self.currentTiles)
 
             self.mainplayer.Aupdate()
             self.backobjects.backupdate(self.left)
@@ -277,6 +275,7 @@ class Screen:
                 else:
                     self.currentLevel += 1
                 self.state = "LIFESCREEN"
+##                self.playerpos = self.levels[self.currentLevel].startpos
                 self.velocity[1] = 0
                 self.l_screen_clock.tick()
             else:
@@ -306,14 +305,15 @@ class Screen:
             elif self.playerpos[0] + 24 > 1024:
                 self.playerpos[0] = 1024 - 24
 
-            self.mainplayer.Aupdate()
-            self.backobjects.backupdate(self.left)
+##            self.mainplayer.Aupdate()
+##            self.backobjects.backupdate(self.left)
 
         if self.dead:
             self.lock = True
             if self.playerpos[1] > 1076:
                 self.velocity[1] = 0
                 self.state = "LIFESCREEN"
+##                self.playerpos = self.levels[self.currentLevel].startpos
                 self.l_screen_clock.tick()
 
             if abs(self.velocity[0]) > 10.0:
@@ -338,8 +338,8 @@ class Screen:
             elif self.playerpos[0] + 24 > 1024:
                 self.playerpos[0] = 1024 - 24
 
-            self.mainplayer.Aupdate()
-            self.backobjects.backupdate(self.left)
+##            self.mainplayer.Aupdate()
+##            self.backobjects.backupdate(self.left)
 
         elif self.state == "ENDSCREEN":
             pass
