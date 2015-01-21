@@ -118,9 +118,6 @@ class Screen:
         self.tiles.append(self.TALevel8.tiles)
         self.tilesInverse.append(self.TALevel8.inverted_tiles)
 
-
-        
-
     def update(self):
         self.leftPressed = False
         self.rightPressed = False
