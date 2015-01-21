@@ -14,7 +14,7 @@ class Screen:
         self.go = True
         self.state = "LIFESCREEN"
         self.left = False
-
+        self.fullscreen = False
         self.screenw = 1024
         self.screenh = 768
         self.sound = soundmanager()
@@ -141,8 +141,16 @@ class Screen:
                         self.upPressed = True
 
                     elif event.key == pygame.K_ESCAPE:
-                        pygame.quit()
-                        sys.exit()
+                        if self.fullscreen:
+                            self.shakeScreen = pygame.display.set_mode((self.screenw, self.screenh))
+                            self.fullscreen = False
+                        else:
+                            pygame.quit()
+                            sys.exit()
+                    elif event.key == pygame.K_f:
+                        if not self.fullscreen:
+                            self.shakeScreen = pygame.display.set_mode((self.screenw, self.screenh), pygame.FULLSCREEN)
+                            self.fullscreen = True
 
         keys = pygame.key.get_pressed()
         self.currentTiles = self.tiles[self.currentLevel]
