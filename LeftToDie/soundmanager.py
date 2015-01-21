@@ -3,7 +3,7 @@ import pygame
 class soundmanager():
     def __init__(self):
         # Preload sounds so we don't run into processing issues
-        self.syobon = pygame.mixer.music.load("Sounds/syobon.mp3")
+        self.syobon = pygame.mixer.music.load("Sounds/syobon.ogg")
         # Loop music
         pygame.mixer.music.play(-1)
 
