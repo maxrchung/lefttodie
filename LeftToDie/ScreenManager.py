@@ -150,11 +150,17 @@ class Screen:
         self.clouds.cloudupdate(self.left)
         
         if self.state == "LIFESCREEN":
+            self.screenShaker.stop()
             self.velocity = [0.3, 0]
             self.sound.playsound("syobon")
             self.left = False
             self.lock = False
             self.startplayer.Aupdate()
+            if self.left:
+                self.mainplayer= Animate(AllSprites['playerIdleInverse.png'], 2, 2, 500, 32, 32)
+            else:
+                self.mainplayer= Animate(AllSprites['playerIdleNormal.png'], 2, 2, 500, 32, 32)
+                
             self.l_screen_time += self.l_screen_clock.tick()
             if self.l_screen_time >= 3000:
                 self.state = "GAMESCREEN"
@@ -266,7 +272,7 @@ class Screen:
                 elif self.velocity[0] < 0:
                     self.velocity[0] = -10.0
 
-            self.previouspos = self.playerpos
+            self.previouspos = [self.playerpos[0], self.playerpos[1]]
 
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
@@ -300,7 +306,7 @@ class Screen:
                 elif self.velocity[0] < 0:
                     self.velocity[0] = -10.0
 
-            self.previouspos = self.playerpos
+            self.previouspos = [self.playerpos[0], self.playerpos[1]]
 
             self.playerpos[0] += self.velocity[0]
             self.playerpos[1] += self.velocity[1]
@@ -355,6 +361,10 @@ class Screen:
                     self.lock = True
                     self.sound.playsound("victory")
                     self.sound.playsound("levelUp")
+                    if not self.left:
+                        self.mainplayer = Animate(AllSprites['playerJumpNormal.png'], 1, 1, 1000, 32, 32)
+                    else:
+                        self.mainplayer = Animate(AllSprites['playerJumpInverse.png'], 1, 1, 1000, 32, 32)
                     return
                 elif tile.name == "block":
                     playerPos = previouspos
@@ -498,8 +508,13 @@ class Screen:
             for i in range(0, len(self.clouds.clouds)):
                 self.screen.blit(AllSprites[self.clouds.clouds[i][3]], (self.clouds.clouds[i][0], self.clouds.clouds[i][1]))
 
-            for tile in self.currentTiles:
-                tile.draw()
+            if self.left:
+                for tile in self.currentTilesInverse:
+                    tile.draw()
+
+            else:
+                for tile in self.currentTiles:
+                    tile.draw()
 
             self.mainplayer.draw(self.screen, self.playerpos[0], self.playerpos[1])
 
