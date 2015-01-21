@@ -129,15 +129,15 @@ class Screen:
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.leftPressed = True
                         self.left = True
 
-                    elif event.key == pygame.K_RIGHT:
+                    elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.rightPressed = True
                         self.left = False
 
-                    elif event.key == pygame.K_UP:
+                    elif event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE:
                         self.upPressed = True
 
                     elif event.key == pygame.K_ESCAPE:
@@ -221,13 +221,13 @@ class Screen:
                 self.velocity[1] = -25.0
 
             # Right movement
-            if keys[pygame.K_RIGHT]:
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 self.sound.playsound("syobon")
                 self.velocity[0] += 3.0
                 self.left = False
             
             # Left movement
-            if keys[pygame.K_LEFT]:
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 self.sound.playsound("inverse")
                 self.velocity[0] += -3.0
                 self.left = True
